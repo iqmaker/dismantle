@@ -1,0 +1,20 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Примеры. Знакомство с JavaScript API. Простой вызов карты.</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src="http://api-maps.yandex.ru/1.1/index.xml?key=AGM9JU4BAAAApnERaQIA5uUwIjR0IRLVHltbc8K-PSpaLyoAAAAAAAAAAACokFuosvhvF6pJ8ceyJqc8ec75Gw=="
+	type="text/javascript"></script>
+
+<script type="text/javascript">
+    window.onload = function () {
+                    var map = new YMaps.Map(document.getElementById("YMapsID"));
+                                map.setCenter(new YMaps.GeoPoint(39.5876808, 52.6059493), 10);
+                                        }
+    </script>
+</head>
+<body>
+    <div id="YMapsID" style="width:600px;height:400px"></div>
+</body>
+</html>
+	

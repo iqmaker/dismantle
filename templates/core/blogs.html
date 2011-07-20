@@ -1,0 +1,25 @@
+{% extends "core/base.html" %}
+
+{% block extra_head_base %}
+    <script src="/media/js/jquery.js" type="text/javascript"></script>
+    <script src="/media/js/jquery-autocomplete/jquery.autocomplete.js" type="text/javascript"></script>
+    
+<!--     <link rel="stylesheet" href="/media/js/jquery-autocomplete/demo/main.css" type="text/css" /> -->
+<!--     <link type="text/css" rel="stylesheet" href="/media/css/jquery.autocomplete.css"> -->
+    
+<!--    <script type="text/javascript">
+    $(document).ready(function() {  
+        //var data = "Core Selectors Attributes Traversing Manipulation CSS Events Effects Ajax Utilities".split(" "); 
+        $("#q1").autocomplete( "/razborka/mansearch" );
+        $("#q2").autocomplete("/razborka/modelsearch");  
+        });  
+    </script>-->
+
+{% endblock %}
+
+{% block body_outer %}
+<!--     <input id="q1" type="text" autocomplete="off" class="ac_input" style="font-size:24px;margin:150px;"> -->
+<!--     <input id="q2" type="text" autocomplete="off" class="ac_input" style="font-size:24px;margin:150px;"> -->
+{% endblock %}
+
+{% block blogs_button %}<li class="selected"><a href="/">Статьи</a></li> {%endblock%}

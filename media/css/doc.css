@@ -1,0 +1,260 @@
+.section h1
+{
+	visibility: hidden;
+	height: 1px;
+}
+.title_09 a
+{
+	text-decoration:none;
+}
+#book > ul.simple > li
+{
+	line-height: 12px;
+	margin: 0;
+	list-style-position: inside;
+	padding: 10px 14px;
+	/*display:block !important;*/
+	float: none;
+}
+#book ul ul, #contributing ul ul {
+display: inline;
+padding: 5px 0 0 0;
+}
+#book ul ul li, #contributing ul ul li {
+display: inline;
+margin: 0;
+}
+#cookbook > ul.simple > li, #glossary > ul.simple > li, #contributing > ul.simple > li {
+	line-height: 20px;
+	margin: 0;
+	list-style-type: none;
+	padding: 8px 30px;
+	display:block !important;
+	float: none;
+}
+.box_hr {
+	background: transparent url(images/bg_hr.gif) no-repeat center 0;
+	position: relative;
+	margin: 10px 0;
+}
+.box_hr hr {
+	visibility: hidden;
+	position: absolute;
+	z-index: 100;
+}
+.box_page_summary {
+	background-color: #F2F2F2;
+	margin: 20px 0;
+	padding: 22px 20px;
+	float: left;
+}
+.article_text {
+	width: 528px;
+}
+.clear_fix::after {
+	content: " 0020";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+.box_page_summary .article_text {
+	width: 488px;
+}
+.article_illustration, .article_text {
+	float: left;
+	padding: 22px 20px;
+}
+.clear_fix {
+	display: block inline;
+}
+.illustration
+{
+	float: left;
+	display: block;
+}
+.five_minutes ul {
+	float: left;
+}
+.five_minutes li {
+	line-height: 20px;
+	margin: 8px 30px;
+}
+ul.simple em
+{
+	font-style: normal;
+}
+.article a
+{
+	text-decoration:none;
+	color: #08C;
+}
+.article a:hover
+{
+	text-decoration:underline;
+}
+.quick_tour_list li
+{
+	display: inline;
+}
+p,em
+{
+	padding: 0;
+}
+.feedback
+{
+	text-align: left;
+	font-size: 90%;
+}
+#license
+{
+	font-size: 80%;
+}
+.column_01
+{
+	float: right;
+	width: 250px;
+}
+.column_02
+{
+	margin-right: 260px;
+}
+table
+{
+	border-collapse: collapse;
+}
+
+
+div.jsactive {
+	position: relative;
+}
+div.jsactive ul {
+	list-style: none;
+}
+.box_article ul {
+	margin-left: 16px;
+	color: #444;
+	font-family: "Lucida Sans Unicode","Lucida Grande",Verdana,Arial,Helvetica,sans-serif;
+	font-size: 14px;
+	margin-bottom: 12px;
+}
+div.jsactive li {
+	float: left;
+	list-style: none;
+	margin-left: 0;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	background-color: #DDD;
+	margin-right: 5px;
+}
+div.configuration-block li {
+	padding: 5px;
+}
+.doc_page li {
+	color: #444;
+	font-size: 14px;
+	font-family: "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+	margin-bottom: 13px;
+	list-style-type: disc;
+	margin-left: 30px;
+}
+div.jsactive a {
+	color: black;
+	text-decoration: none;
+}
+div.configuration-block em {
+	font-style: normal;
+	font-size: 90%;
+	margin-bottom: 10px;
+}
+div.jsactive .selected {
+	background-color: #232125;
+}
+div.jsactive .selected a
+{
+	color: white;
+}
+div.jsactive div {
+	position: absolute;
+	left: 0;
+}
+div.jsactive div div {
+	position: static;
+}
+div.jsactive pre {
+	margin: 0;
+}
+
+.linenodiv
+{
+	width: 30px;
+}
+
+.admonition-wrapper .admonition-tip
+{
+	background: #F5F5F5 url('images/tip.png') no-repeat left top;
+	padding: 0px 35px 13px 50px;
+}
+.admonition-wrapper .admonition-note
+{
+	background: #F5F5F5 url('images/note.png') no-repeat left top;
+	padding: 0px 35px 13px 50px;
+}
+.admonition-wrapper .admonition-seealso
+{
+	background: #F5F5F5 url('images/seealso.png') no-repeat left top;
+	padding: 0px 35px 13px 50px;
+}
+.admonition-wrapper .admonition-sidebar
+{
+	background: #F5F5F5 url('images/sidebar.png') no-repeat left top;
+	padding: 0px 35px 13px 50px;
+}
+.admonition-title
+{
+	visibility: hidden;
+}
+.headerlink
+{
+	color: #EEE !important;
+	font-size: 60%;
+	text-decoration: none;
+	padding: 4px;
+}
+.headerlink:hover
+{
+	color: #666 !important;
+	text-decoration: none !important;
+}
+.navigation
+{
+	text-align: center;
+}
+pre
+{
+  background-color: #232125;
+  overflow: auto;
+  line-height: 1.3em;
+  color: #fff;
+  font-size: 14px;
+  padding: 0.7em;
+  margin-bottom: 20px;
+}
+
+pre code
+{
+  background-color: #232125;
+}
+
+pre.command-line
+{
+  background-color: #333;
+  color: #eee;
+  padding-bottom: 10px;
+}
+
+pre.command-line code
+{
+  background-color: #333;
+}

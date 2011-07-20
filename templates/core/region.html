@@ -1,0 +1,27 @@
+{% extends "core/base.html" %}
+{% block head_title %}Ваша страна и регион{% endblock %}
+
+{% block body_outer %}
+
+ <div>{% for state in states %}
+ 
+ <div style="width:100%;float:left;margin:5px;">
+ <p><h2>{{state.title}}</h2></p>
+    <div style="width:15%;float:left;margin:10px;">{% for region in regions %}
+         {% if state.id == region.state_id %}
+            {% if region.nextline == 'yes' %}
+            </div>
+            <div style="width:15%;float:left;margin:10px;">
+            {% endif %}
+            {% if region.selected == 'yes' %}
+                <p><a style="color:red;" href="/?regionid={{region.id}}">{{region.title}}</a></p>
+            {% else %}
+                <p><a href="/?regionid={{region.id}}">{{region.title}}</a></p>
+            {% endif %}
+        {% endif %}
+    {% endfor %}</div>
+ </div>
+
+ {% endfor %}</div>
+ 
+{% endblock %}
