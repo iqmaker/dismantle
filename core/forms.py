@@ -33,7 +33,7 @@ class CustomModelChoiceField(forms.ModelChoiceField):
         
 class DismantleSearchForm( Form ):
     manufacture = CustomModelChoiceField( queryset=Manufacture.objects.all(), label=u'Марка автомобиля',  required=False, empty_label=u"не выбрано",  )
-    model = CustomModelChoiceField( queryset=Model.objects.filter( id=0 ), check_queryset=Model.objects.all(), label=u'Модель', required=False, empty_label=u"не выбрано")
+    model = CustomModelChoiceField( queryset=Model.objects.filter( id=0 ), check_queryset=Model.objects.all(), label=u'Модель', required=False, empty_label=u"любая модель")
     
     #manufacture.widget.attrs["onchange"] = "setMake();"
     

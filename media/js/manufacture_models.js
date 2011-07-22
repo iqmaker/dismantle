@@ -1,7 +1,7 @@
 $(function(){
     $("select#id_manufacture").change(function(){
       $.getJSON("razborka/ajax/manufacture_models/",{id:+$(this).val()}, function(j) {
-        var options = '<option value="">не выбрано</option>';
+        var options = '<option value="">любая модель</option>';
         for (var i = 0; i < j.length; i++) {
           options += '<option value="' + parseInt(j[i].pk) + '">' + j[i].fields['title'] + '</option>';
         }

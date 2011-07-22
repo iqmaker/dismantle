@@ -3,6 +3,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<script src="http://code.jquery.com/jquery-latest.js"></script> 
+ 	<script src="/media/js/core.js" type="text/javascript"></script>
 	<link rel="stylesheet" href="{{ MEDIA_URL }}css/style.css" type="text/css">
 	<link rel="stylesheet" href="{{ MEDIA_URL }}css/doc.css" type="text/css">
 	<link rel="stylesheet" href="{{ MEDIA_URL }}css/redtable.css" type="text/css">
@@ -21,14 +22,6 @@
     </style> 
     
     </head>
-    <script>
-    function set_cookie( c_name, value, exdays ) {
-        var exdate=new Date();
-        exdate.setDate(exdate.getDate() + exdays);
-        var c_value=escape(value) + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
-        document.cookie=c_name + "=" + c_value;
-    }
-    </script>
     <body class="{% block body_class %}{% endblock %}" bgcolor="#EEEEEE" onload="{% block body_initialize %} {% endblock%}" >  
     <input type="text" style="display:none" id="region"/>
     <div id="header">
