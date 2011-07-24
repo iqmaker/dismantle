@@ -30,8 +30,12 @@ def thumbnail(file, size='200x200'):
 
 register.filter(thumbnail)
 
-class UserProfile(models.Model):
-    user = models.OneToOneField(User)
+class Person( models.Model ):
+    user = models.OneToOneField( User )
+    second_name = models.CharField( max_length=30, verbose_name=u'Отчество', blank=True, null=True )
+    raw_password = models.CharField( max_length=128, verbose_name=u''  )
+    birth_date = models.DateField( verbose_name=u'Дата рождения', blank=True, null=True )
+    account_state = models.FloatField( verbose_name=u'Состояние счета (руб)' )
     
 class Manufacture( models.Model ):
     title = models.CharField( max_length=64, verbose_name=u'Название' )

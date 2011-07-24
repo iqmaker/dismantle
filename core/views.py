@@ -17,7 +17,7 @@ from core.models import Dismantle
 from settings import *
 from django.utils.encoding import force_unicode
 from django.template import Node, Library
-from core.forms import DismantleForm, DismantleSearchForm
+from core.forms import DismantleForm, DismantleSearchForm, user_registration_form
 import sys
 import time
 from django.contrib.auth import authenticate, login
@@ -297,4 +297,36 @@ def index( request, regionid=None, manufactureid=None, modelid=None, pageid=None
 def mylogout(request):
     logout(request)
     return HttpResponseRedirect( "/" )
-    #return index( request )
+
+def registration( request ):
+    if request.method == 'POST':
+        form = user_registration_form( request.POST )
+        if form.is_valid():
+            first, last, second = form.username.split(',')
+            u = User( first_name=first, 
+                         last_name=last,  
+                         username=form.login, 
+                         email=form.email, 
+                         is_staff=False,
+                         is_active=True, 
+                         is_superuser=False, 
+                         last_login=now,
+                         date_joined=now)
+                         
+            u.set_password( form.password.strip() )
+            u.save()
+            
+            p = Person( user = u.id, 
+                        second_name=second, 
+                        raw_password=form.password.strip(), 
+                        birth_date = None,
+                        account_state = 0.0 )
+            p.save()
+    else:
+        form = user_registration_form()
+        
+    return render_to_response( 'core/registration.html',
+                            {'form': form,
+                             'next': 'core/profile.html',
+                            }, 
+                            context_instance=RequestContext(request))

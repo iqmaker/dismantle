@@ -12,6 +12,7 @@ urlpatterns = patterns('',
     (r'^admin/', include(admin.site.urls)),
     (r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'core/login.html'} ), #redirect_field_name,authentication_form
     (r'^logout/$', 'dismantle.core.views.mylogout' ),
+    (r'^registration/$', 'dismantle.core.views.registration' ),
 )
 
 if settings.DEBUG:

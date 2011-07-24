@@ -41,6 +41,11 @@ p.phone {
 p.address {
     font-weight:bold; 
 }
+p.ErrorMessage{
+    text-align:center;
+    float:center;
+    color:red;
+}
 a
 {
 	color: #08C;
@@ -153,7 +158,7 @@ html, body, #wrap {height: 100%;}
 
 body > #wrap {height: auto; min-height: 100%;}
 
-#id_username, #id_password {
+#id_username, #id_password, #id_email, #id_login {
     background-color: white;
     border-bottom-color: rgba(82, 168, 236, 0.746094);
     border-bottom-left-radius: 4px;
@@ -208,10 +213,11 @@ body > #wrap {height: auto; min-height: 100%;}
 p.downspace { 
     margin-bottom:100px;
 }
-input.Login { 
+input.Login, input.Registration { 
     font-size: 20px;
     float: right;
 }
+
 #body {padding-bottom: 50px;}  /* отступ должен быть равен высоте футера */
 .clearfix:after {content: ".";
 	display: block;
