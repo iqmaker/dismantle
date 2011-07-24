@@ -68,10 +68,11 @@ a:hover
 #transl > a em { 
     color:#FFF;
     font-style:normal;    
+    margin-left:5px;
 }
 
 #header {
-	padding-top: 1em;
+    padding-top: 1em;
     background:#333;
     margin:-1em 0em 3em -1em;
     /*box-shadow:0 0 3em rgba(0,0,0,0.2);*/
@@ -103,22 +104,114 @@ iframe { border:none; }
 {
 	padding: 0px 40px 40px 40px;
 }
+
 #footer {
-	margin-left: -1em;
-    padding:1em;
-    padding-bottom: 0;
-    color:#eee;
-    background:#333;
-    position: relative;
-	margin-top: -51px;
-	height: 50px;
-	clear:both;
+        margin-left: -1em;
+        padding:1em;
+        padding-bottom: 0;
+        color:#eee;
+        background:#333;
+        position: relative;
+        margin-top: -51px;
+        height: 50px;
+        clear:both;
 }
 
+#footer a
+{
+        text-decoration:none;
+        color: #63C904;
+}
+
+#footer > a em { 
+    color:#63C904;
+    font-style:normal;    
+    font-size:12px;
+    text-decoration:underline;
+}
+
+#Hello { 
+    font-style:normal;
+    font-size:18px;
+}
+
+#UserName { 
+    font-style:normal;
+    font-size:24px;
+    margin-left:5px;
+    font-weight:bold;
+    text-decoration:underline;
+}
+#LogOut { 
+    font-style:normal;
+    text-decoration: underline;
+    color:#FFF;
+    font-size:24px;
+    margin-left:5px;
+}
 html, body, #wrap {height: 100%;}
 
 body > #wrap {height: auto; min-height: 100%;}
 
+#id_username, #id_password {
+    background-color: white;
+    border-bottom-color: rgba(82, 168, 236, 0.746094);
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-left-color: rgba(82, 168, 236, 0.746094);
+    border-left-style: solid;
+    border-left-width: 1px;
+    border-right-color: rgba(82, 168, 236, 0.746094);
+    border-right-style: solid;
+    border-right-width: 1px;
+    border-top-color: rgba(82, 168, 236, 0.746094);
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-top-style: solid;
+    border-top-width: 1px;
+    box-shadow: rgba(82, 168, 236, 0.496094) 0px 0px 8px 0px;
+    color: black;
+    cursor: auto;
+    display: inline-block;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 20px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    height: 24px;
+    letter-spacing: normal;
+    line-height: normal;
+    margin-bottom: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    outline-color: black;
+    outline-style: none;
+    outline-width: 0px;
+    overflow-x: visible;
+    overflow-y: visible;
+    padding-bottom: 8px;
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-top: 8px;
+    position: static;
+    text-align: -webkit-auto;
+    text-indent: 0px;
+    text-shadow: none;
+    text-transform: none;
+    width: 382px;
+    word-spacing: 0px;
+    z-index: auto;
+}
+p.downspace { 
+    margin-bottom:100px;
+}
+input.Login { 
+    font-size: 20px;
+    float: right;
+}
 #body {padding-bottom: 50px;}  /* отступ должен быть равен высоте футера */
 .clearfix:after {content: ".";
 	display: block;

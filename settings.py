@@ -22,6 +22,8 @@ DATABASES = {
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
+
+LOGIN_REDIRECT_URL = "/"
 """ Yandex maps api key"""
 YANDEX_KEY = "AGM9JU4BAAAApnERaQIA5uUwIjR0IRLVHltbc8K-PSpaLyoAAAAAAAAAAACokFuosvhvF6pJ8ceyJqc8ec75Gw=="
 # Local time zone for this installation. Choices can be found here:

@@ -20,7 +20,9 @@ from django.template import Node, Library
 from core.forms import DismantleForm, DismantleSearchForm
 import sys
 import time
-#sys.stdout.write(s.encode(sys.stdout.encoding))
+from django.contrib.auth import authenticate, login
+from django.contrib.auth import logout
+
 user_agents = [
     'Mozilla/5.0 (Windows; U; Windows NT 5.1; it; rv:1.8.1.11) Gecko/20071127 Firefox/2.0.0.11',
     'Opera/9.25 (Windows NT 5.1; U; en)',
@@ -122,7 +124,10 @@ def update_contragent_coordinates():
 def blogs(request):
     regionid = get_region( request )
     oRegion = Region.objects.get( id=regionid )
-    return render_to_response( 'core/blogs.html', {'region_name':oRegion.title,}, context_instance=RequestContext(request)  )
+    return render_to_response( 'core/blogs.html', 
+                                {'region_name':oRegion.title,
+                                 'region_label':u'Регион:',
+                                }, context_instance=RequestContext(request)  )
 
 def mansearch(request):
      if request.method == 'GET':  
@@ -153,21 +158,47 @@ def manufacture_models(request):
     print request.GET
     json_subcat = serializers.serialize("json", Model.objects.filter(manufacture=request.GET['id']))
     return HttpResponse(json_subcat, mimetype="application/javascript")
+
+
     
+def mylogin(request):
+    username = request.POST['username']
+    password = request.POST['password']
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        if user.is_active:
+            login(request, user)
+            # Redirect to a success page.
+        else:
+            # Return a 'disabled account' error message
+            pass
+    else:
+        # Return an 'invalid login' error message.
+        pass
+        
 def dismantle_add(request):
     regionid = get_region( request )
     oRegion = Region.objects.get( id=regionid )
-    return render_to_response( 'core/dismantle-add.html', {'region_name':oRegion.title,}, context_instance=RequestContext(request)  )
+    return render_to_response( 'core/dismantle-add.html', 
+                            {'region_name':oRegion.title,
+                            'region_label':u'Регион:',
+                            }, context_instance=RequestContext(request)  )
     
 def about(request):
     regionid = get_region( request )
     oRegion = Region.objects.get( id=regionid )
-    return render_to_response( 'core/about.html', {'region_name':oRegion.title,}, context_instance=RequestContext(request)  )
+    return render_to_response( 'core/about.html', 
+                            {'region_name':oRegion.title,
+                            'region_label':u'Регион:',
+                            }, context_instance=RequestContext(request)  )
     
 def feedback(request):
     regionid = get_region( request )
     oRegion = Region.objects.get( id=regionid )
-    return render_to_response( 'core/feedback.html', {'region_name':oRegion.title,}, context_instance=RequestContext(request)  )
+    return render_to_response( 'core/feedback.html', 
+                            {'region_name':oRegion.title,
+                            'region_label':u'Регион:',
+                            }, context_instance=RequestContext(request)  )
   
 
 def get_region( request ):
@@ -206,6 +237,7 @@ def region(request):
     resp = render_to_response (  'core/region.html', 
                                 { 'states':states, 
                                 'regions':regions, 
+                                'region_label':u'Регион:',
                                 'region_name':oRegion.title,
                                 'MEDIA_URL':settings.MEDIA_URL }, 
                                 context_instance=RequestContext(request)  )
@@ -252,6 +284,7 @@ def index( request, regionid=None, manufactureid=None, modelid=None, pageid=None
                             'manufacture':manufacture, 
                             'MEDIA_URL':settings.MEDIA_URL,
                             'total':len(contragents),
+                            'region_label':u'Регион:',
                             'region_name':oRegion.title,
                             'DismantleSearchForm':form,
                             }, 
@@ -260,3 +293,8 @@ def index( request, regionid=None, manufactureid=None, modelid=None, pageid=None
     set_cookie( resp, 'regionid', regionid ) #Moscow
     resp.content = strip_empty_lines( resp.content )
     return resp
+
+def mylogout(request):
+    logout(request)
+    return HttpResponseRedirect( "/" )
+    #return index( request )

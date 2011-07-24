@@ -3,7 +3,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<script src="http://code.jquery.com/jquery-latest.js"></script> 
- 	<script src="/media/js/core.js" type="text/javascript"></script>
+ 	<script src="{{ MEDIA_URL }}js/core.js" type="text/javascript"></script>
 	<link rel="stylesheet" href="{{ MEDIA_URL }}css/style.css" type="text/css">
 	<link rel="stylesheet" href="{{ MEDIA_URL }}css/doc.css" type="text/css">
 	<link rel="stylesheet" href="{{ MEDIA_URL }}css/redtable.css" type="text/css">
@@ -25,24 +25,32 @@
     <body class="{% block body_class %}{% endblock %}" bgcolor="#EEEEEE" onload="{% block body_initialize %} {% endblock%}" >  
     <input type="text" style="display:none" id="region"/>
     <div id="header">
-            <div id="transl"><a href="/razborka/region">Регион: <em>{{region_name}}</em></a></div>
+            <div id="transl"><a href="/razborka/region">{{region_label}}<em>{{region_name}}</em></a></div>
             <a href="/">Все<em>-разборки</em></a>
             <ul class="buttons top_bound">
                 {% block main_button %}<li class=""><a href="/">Главная</a></li> {%endblock%}
                 {% block blogs_button %}<li class=""><a href="/razborka/blogs">Статьи</a></li>{%endblock%}
                 {% block dismantle_add_button %}<li class=""><a href="/razborka/dismantle-add">Добавить разборку</a></li>{%endblock%}
                 {% block about_button %}<li class=""><a href="/razborka/about">О проекте</a></li>{%endblock%}
-                {% block feedback_button %}<li class=""><a href="/razborka/feedback">Администрация сайта</a></li>{%endblock%}
+<!--                 {% block feedback_button %}<li class=""><a href="/razborka/feedback">Администрация сайта</a></li>{%endblock%} -->
             </ul>
     </div>
     
 	<div class="body">   
-        {% block body_outer %}
-            {% block google_maps_div %}{% endblock %}
-            {% block yandex_maps_div %}{% endblock %}
-        {% endblock %}
+            {% block body_outer %}
+                {% block google_maps_div %}{% endblock %}
+                {% block yandex_maps_div %}{% endblock %}
+            {% endblock %}
         </div>
-        <div id="footer">{% block footer %}{% endblock %}</div>
+        <div id="footer">
+            {% block footer %}
+               {% if user.is_authenticated %}
+                    <p><a href="/profile"><em id="UserName">{{ user.username }}</em></a> <a href="/logout"><em id="LogOut">выйти</em></a></p>
+                {% else %}
+                    <a href="/login"><em>Авторизация для владельцев</em></a>
+                {% endif %}
+            {% endblock %}
+        </div>
 
         {% block extra_body_base %}
             {% block extra_body %}{% endblock %}

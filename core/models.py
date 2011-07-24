@@ -6,6 +6,7 @@ import settings
 import Image
 from django.template import Library
 from enums import *
+from django.contrib.auth.models import User
 
 register = Library()
 
@@ -29,6 +30,9 @@ def thumbnail(file, size='200x200'):
 
 register.filter(thumbnail)
 
+class UserProfile(models.Model):
+    user = models.OneToOneField(User)
+    
 class Manufacture( models.Model ):
     title = models.CharField( max_length=64, verbose_name=u'Название' )
     ru_title = models.CharField( max_length=64, verbose_name=u'Русскоязычное название', blank=True, null=True )
