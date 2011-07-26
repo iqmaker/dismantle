@@ -20,7 +20,7 @@
     <td>{{ form.password }}</td>
 </tr>
 <tr>
-    <td> <input type="hidden" name="next" value="{{ next }}" /> </td>
+    <td> <input type="hidden" name="next" value="{{ next }}" />  </td>
     <td> <input type="submit" class="Login" value="Войти" /> </td>
 </tr>
 </table>
@@ -30,4 +30,4 @@
 <p class="downspace"></p>
 {% endblock %}
 
-{% block footer %} {% endblock %}
+{% block footer %}<a href="/registration"><em>Регистрация нового пользователя</em></a>{% endblock %}

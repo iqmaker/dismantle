@@ -33,6 +33,7 @@ p.title {
     color:#666666;
     font-weight:bold;
     font-size:18px;
+    text-transform: uppercase;
 }
 p.phone { 
     font-weight:bold;  
@@ -43,7 +44,7 @@ p.address {
 }
 p.ErrorMessage{
     text-align:center;
-    float:center;
+    text-transform:uppercase;
     color:red;
 }
 a
@@ -74,6 +75,7 @@ a:hover
     color:#FFF;
     font-style:normal;    
     margin-left:5px;
+    text-decoration:underline;
 }
 
 #header {

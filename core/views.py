@@ -6,7 +6,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.conf import settings
-from core.models import Contragent, Manufacture, Model, State, Region, City
+from core.models import Contragent, Manufacture, Model, State, Region, City, Person
 from urllib import FancyURLopener
 from random import choice
 import urllib
@@ -17,11 +17,12 @@ from core.models import Dismantle
 from settings import *
 from django.utils.encoding import force_unicode
 from django.template import Node, Library
-from core.forms import DismantleForm, DismantleSearchForm, user_registration_form
+from core.forms import DismantleForm, DismantleSearchForm, user_registration_form, user_profile_form
 import sys
 import time
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import logout
+from django.contrib.auth.models import User
 
 user_agents = [
     'Mozilla/5.0 (Windows; U; Windows NT 5.1; it; rv:1.8.1.11) Gecko/20071127 Firefox/2.0.0.11',
@@ -274,6 +275,12 @@ def index( request, regionid=None, manufactureid=None, modelid=None, pageid=None
             
     if not regionid:
         regionid = get_region( request )
+
+    if regionid.isdigit(): 
+        if Region.objects.filter( id=regionid ).count() == 0:
+            regionid = 4 #default Moscow
+    else:
+            regionid = 4
     
     oRegion = Region.objects.get( id=regionid )
     city_center = city_center_by_region( regionid )
@@ -302,26 +309,29 @@ def registration( request ):
     if request.method == 'POST':
         form = user_registration_form( request.POST )
         if form.is_valid():
-            first, last, second = form.username.split(',')
+            last, first, second = [ x.strip() for x in form.cleaned_data['username'].split(',') ]
             u = User( first_name=first, 
                          last_name=last,  
-                         username=form.login, 
-                         email=form.email, 
+                         username=form.cleaned_data['login'], 
+                         email=form.cleaned_data['email'], 
                          is_staff=False,
                          is_active=True, 
                          is_superuser=False, 
-                         last_login=now,
-                         date_joined=now)
+                         last_login=datetime.datetime.now(),
+                         date_joined=datetime.datetime.now())
                          
-            u.set_password( form.password.strip() )
+            u.set_password( form.cleaned_data["password"].strip() )
             u.save()
             
-            p = Person( user = u.id, 
+            p = Person( user = u, 
                         second_name=second, 
-                        raw_password=form.password.strip(), 
+                        raw_password=form.cleaned_data["password"].strip(), 
                         birth_date = None,
                         account_state = 0.0 )
             p.save()
+            auser = authenticate(username=u.username, password=p.raw_password)
+            login( request, auser)
+            return HttpResponseRedirect( "/" )
     else:
         form = user_registration_form()
         
@@ -330,3 +340,46 @@ def registration( request ):
                              'next': 'core/profile.html',
                             }, 
                             context_instance=RequestContext(request))
+
+def profile( request ):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect( "/login" )
+        
+    if request.method == 'POST':
+        form = user_profile_form( request.POST )
+        if form.is_valid():
+            last, first, second = [ x.strip() for x in form.cleaned_data['username'].split(',') ]
+            
+            u = User.objects.get( id = request.user.pk )
+            p = Person.objects.get( user = u )
+            
+            u.username = form.cleaned_data['login'].strip()
+            u.email = form.cleaned_data['email'].strip()
+            u.first_name = first
+            u.last_name = last;
+            u.set_password( form.cleaned_data["password"].strip() )
+            
+            p.second_name = second
+
+            u.save()
+            p.save()
+        else:
+            print 'not valid form data'
+    else:
+        u = User.objects.get( id = request.user.pk )
+        
+        p = Person.objects.get( user = u )
+        data = { 'username' : ', '.join( [u.last_name, u.first_name, p.second_name] ), 
+                 'login':u.username, 
+                 'email':u.email, 
+                 'password':p.raw_password,
+                 }
+        form = user_profile_form( data )
+        
+        
+        
+    return render_to_response( 'core/profile.html',
+                            {'form': form,
+                             'next': 'core/profile.html',
+                            }, 
+                            context_instance=RequestContext(request))    
