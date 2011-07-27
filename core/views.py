@@ -17,12 +17,15 @@ from core.models import Dismantle
 from settings import *
 from django.utils.encoding import force_unicode
 from django.template import Node, Library
-from core.forms import DismantleForm, DismantleSearchForm, user_registration_form, user_profile_form
+from core.forms import DismantleForm, DismantleSearchForm, user_registration_form, user_profile_form, restore_password_form
 import sys
 import time
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
+import smtplib
+from email.mime.text import MIMEText
+
 
 user_agents = [
     'Mozilla/5.0 (Windows; U; Windows NT 5.1; it; rv:1.8.1.11) Gecko/20071127 Firefox/2.0.0.11',
@@ -49,6 +52,18 @@ headers = {
 'Content-Type' : 'text/html; charset=windows-1251',
 }
 
+def send_text_email( from_email, to_email, subject, body ):
+
+    msg = MIMEText( body.encode( 'utf-8') )
+    msg.set_charset('utf-8')
+    msg['Subject'] = subject
+    msg['From'] = from_email
+    msg['To'] = to_email
+
+    s = smtplib.SMTP('localhost')
+    s.sendmail( from_email, [to_email,], msg.as_string() )
+    s.quit()
+    
 def strip_empty_lines(value):
     """Return the given HTML with empty and all-whitespace lines removed."""
     return re.sub(r'\n[ \t]*(?=\n)', '', force_unicode(value))
@@ -341,6 +356,38 @@ def registration( request ):
                             }, 
                             context_instance=RequestContext(request))
 
+def restorepassword( request ):
+    if request.user.is_authenticated():
+        return HttpResponseRedirect( "/profile" )
+    
+    if request.method == 'POST':
+        form = restore_password_form( request.POST )
+        if form.is_valid():
+            login = form.cleaned_data['username'].strip()
+            try:
+                u = User.objects.get( username=login )
+                p = Person.objects.get( user = u )
+                print u.email, p.raw_password
+                form.message = u'Пароль отправлен на указанный email'
+                subject = u'Восстановление пароля vse-razborki.ru ' + login
+                body = u'Пароль : ' + p.raw_password
+                print body
+                
+                send_text_email( u'yusupov_dk@mail.ru', u.email, subject, body ) 
+            except:
+                raise
+                form.message = u'Пользователь с таким логином не найден'
+            
+    else:
+        form = restore_password_form()
+        
+    return render_to_response( 'core/restorepassword.html',
+                            {'form': form,
+                             'next': 'core/restorepassword.html',
+                            }, 
+                            context_instance=RequestContext(request))  
+                            
+        
 def profile( request ):
     if not request.user.is_authenticated():
         return HttpResponseRedirect( "/login" )
@@ -363,6 +410,7 @@ def profile( request ):
 
             u.save()
             p.save()
+            form.message = True
         else:
             print 'not valid form data'
     else:
@@ -373,6 +421,7 @@ def profile( request ):
                  'login':u.username, 
                  'email':u.email, 
                  'password':p.raw_password,
+                 'account_state':p.account_state,
                  }
         form = user_profile_form( data )
         

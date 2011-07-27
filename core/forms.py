@@ -45,17 +45,21 @@ class DismantleForm( ModelForm ):
     class Meta:
         model = Dismantle
 
+
 class user_profile_form( Form ):
     login = forms.CharField( label=u'Логин', max_length=30, min_length=3, help_text=u'Выберите логин от 3 до 30 символов' )
     email = forms.EmailField( label=u'E-Mail', help_text=u'Введите реальный Email адрес' )
     password = forms.CharField( widget=forms.PasswordInput, label=u'Пароль', max_length=30, min_length=3, help_text=u'Введите пароль')
     username = forms.CharField( label=u'Фамилия, Имя, Отчество', max_length=128, min_length=3, help_text=u'Ваше реальное имя в формате Фамилия, Имя, Отчество')
-    
+    account_state = forms.FloatField( label=u'Баланс в рублях', required=False )
     def clean_username(self):
         data = self.cleaned_data['username']
         if len(data.split( ',' )) < 3:
             raise forms.ValidationError("Введите Имя, Фамилию, Отчество через запятую")
         return data
+  
+class restore_password_form( Form ):
+    username = forms.CharField( label=u'Логин', max_length=30, min_length=3, help_text=u'Выберите логин от 3 до 30 символов' )
     
 class user_registration_form( Form ):
     login = forms.CharField( label=u'Логин', max_length=30, min_length=3, help_text=u'Выберите логин от 3 до 30 символов' )

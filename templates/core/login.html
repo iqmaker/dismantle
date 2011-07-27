@@ -5,6 +5,7 @@
 
 {% if form.errors %}
     <p class="ErrorMessage">Имя пользователя или пароль не верны, попробуйте еще раз</p>
+    <a href="/restorepassword"><p class="Notification">Восстановление пароля</p></a>
 {% endif %}
 
 <form method="post" action="{% url django.contrib.auth.views.login %}">

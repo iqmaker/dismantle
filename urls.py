@@ -14,6 +14,7 @@ urlpatterns = patterns('',
     (r'^logout/$', 'dismantle.core.views.mylogout' ),
     (r'^registration/$', 'dismantle.core.views.registration' ),
     (r'^profile/$', 'dismantle.core.views.profile' ),
+    (r'^restorepassword/$', 'dismantle.core.views.restorepassword' ),
 )
 
 if settings.DEBUG:

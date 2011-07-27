@@ -47,6 +47,11 @@ p.ErrorMessage{
     text-transform:uppercase;
     color:red;
 }
+
+p.Notification{
+    text-align:center;
+}
+
 a
 {
 	color: #08C;
@@ -160,7 +165,7 @@ html, body, #wrap {height: 100%;}
 
 body > #wrap {height: auto; min-height: 100%;}
 
-#id_username, #id_password, #id_email, #id_login {
+#id_username, #id_password, #id_email, #id_login, #id_account_state {
     background-color: white;
     border-bottom-color: rgba(82, 168, 236, 0.746094);
     border-bottom-left-radius: 4px;
