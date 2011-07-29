@@ -375,7 +375,6 @@ def restorepassword( request ):
                 
                 send_text_email( u'yusupov_dk@mail.ru', u.email, subject, body ) 
             except:
-                raise
                 form.message = u'Пользователь с таким логином не найден'
             
     else:
