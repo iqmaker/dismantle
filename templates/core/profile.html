@@ -1,0 +1,61 @@
+{% extends "core/base.html" %}
+
+{% block body_outer %}
+
+<h1 style="text-align:center;"><p>Персональные данные пользователя</p></h1>
+{% if form.errors %}
+    <p class="ErrorMessage">Пожалуйста, введите корректные данные</p>
+{% endif %}
+
+{% if form.message %}
+    <p class="Notification">Информация сохранена</p>
+{% endif %}
+
+<form method="post" action="{% url dismantle.core.views.profile %}">
+{% csrf_token %}
+
+<table>
+{% if form.login.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.login.errors }}</p></td></tr> {% endif %}
+<tr>
+    <td>{{ form.login.label_tag }}</td>
+    <td>{{ form.login }}</td>
+</tr>
+{% if form.email.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.email.errors }}</p></td></tr> {% endif %}
+<tr>
+    <td>{{ form.email.label_tag }}</td>
+    <td>{{ form.email }}</td>
+</tr>
+{% if form.password.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.password.errors }}</p></td></tr> {% endif %}
+<tr>
+    <td>{{ form.password.label_tag }}</td>
+    <td>{{ form.password }}</td>
+</tr>
+{% if form.username.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.username.errors }}</p></td></tr> {% endif %}
+<tr>
+    <td>{{ form.username.label_tag }}</td>
+    <td>{{ form.username }}</td>
+</tr>
+
+{% if form.birthdate.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.birth_date.errors }}</p></td></tr> {% endif %}
+<tr>
+    <td>{{ form.birth_date.label_tag }}</td>
+    <td>{{ form.birth_date }}</td>
+</tr>
+{% if form.account_state.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.account_state.errors }}</p></td></tr> {% endif %}
+<tr>
+    <td>{{ form.account_state.label_tag }}</td>
+    <td>{{ form.account_state }}</td>
+</tr>
+
+<tr>
+    <td> <input type="hidden" name="next" value="{{ next }}" /> </td>
+    <td> <input type="submit" class="Registration" value="Сохранить изменения" /> </td>
+</tr>
+</table>
+
+</form>
+
+<p class="downspace"></p>
+{% endblock %}
+
+{% block footer %} {% endblock %}
