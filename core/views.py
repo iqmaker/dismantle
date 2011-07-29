@@ -53,7 +53,6 @@ headers = {
 }
 
 def send_text_email( from_email, to_email, subject, body ):
-
     msg = MIMEText( body.encode( 'utf-8') )
     msg.set_charset('utf-8')
     msg['Subject'] = subject
@@ -174,23 +173,6 @@ def manufacture_models(request):
     print request.GET
     json_subcat = serializers.serialize("json", Model.objects.filter(manufacture=request.GET['id']))
     return HttpResponse(json_subcat, mimetype="application/javascript")
-
-
-    
-def mylogin(request):
-    username = request.POST['username']
-    password = request.POST['password']
-    user = authenticate(username=username, password=password)
-    if user is not None:
-        if user.is_active:
-            login(request, user)
-            # Redirect to a success page.
-        else:
-            # Return a 'disabled account' error message
-            pass
-    else:
-        # Return an 'invalid login' error message.
-        pass
         
 def dismantle_add(request):
     regionid = get_region( request )
