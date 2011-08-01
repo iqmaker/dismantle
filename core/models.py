@@ -35,7 +35,15 @@ class Person( models.Model ):
     second_name = models.CharField( max_length=30, verbose_name=u'Отчество', blank=True, null=True )
     raw_password = models.CharField( max_length=128, verbose_name=u''  )
     birth_date = models.DateField( verbose_name=u'Дата рождения', blank=True, null=True )
-    account_state = models.FloatField( verbose_name=u'Состояние счета (руб)' )
+    
+    account_state = models.FloatField( verbose_name=u'Состояние счета (руб)' )   
+    reg_date = models.DateField( verbose_name=u'Дата регистрации', auto_now_add=True )
+    status = models.IntegerField( choices=CONTACT_STATUS, verbose_name=u'Статус' )
+    
+    phone = models.CharField( max_length = 128, verbose_name=u'Телефон', blank=True, null=True )
+    remark = models.TextField( verbose_name=u'Описание', blank=True, null=True )
+    
+    
     
 class Manufacture( models.Model ):
     title = models.CharField( max_length=64, verbose_name=u'Название' )
@@ -94,7 +102,7 @@ class Picture( models.Model ):
     title = models.CharField( max_length=250, verbose_name=u'Название' )
     description = models.TextField('Описание', blank=True)
     pub_date = models.DateTimeField(verbose_name=u'Дата публикации', auto_now_add=True)
-    picture = models.ImageField(verbose_name=u'Изображение', upload_to='pictures')
+    picture = models.ImageField(verbose_name=u'Изображение', upload_to='pictures', max_length=250 )
 
     def get_picture_filename(self):
       return os.path.join(settings.MEDIA_ROOT, self.str(picture) )
@@ -251,7 +259,7 @@ class Contragent( models.Model ):
     short_remark = models.CharField( max_length=512, verbose_name=u'Краткое описание', blank=True, null=True )
     remark = models.TextField( verbose_name=u'Подробное описание', blank=True, null=True )
     main = models.ForeignKey( 'self', verbose_name=u'Вышестоящая организация', blank=True, null=True )
-    
+    last_editing = models.DateField( verbose_name=u'Дата последней коррекции', blank=True, null=True, auto_now_add=True )
     
     def __unicode__(self):
       return self.title
@@ -266,9 +274,16 @@ class ContragentPicture( Picture ):
     
 class Dismantle( Contragent ):
     #Добавить поля, Режим работы, Страница разборки в формате html
+    car_service= models.NullBooleanField( verbose_name=u'Свой автосервис', blank=True, null=True )
+    purchase_vehicles= models.NullBooleanField( verbose_name=u'Скупка автомобилей на разборку', blank=True, null=True )
+    new_parts= models.NullBooleanField( verbose_name=u'Наличие новых запчастей', blank=True, null=True )
+    send_regions= models.NullBooleanField( verbose_name=u'Отправка в регионы', blank=True, null=True )
+    local_delivery= models.NullBooleanField( verbose_name=u'Местная доставка покупателю', blank=True, null=True )
+    
     schedule = models.CharField( max_length=256, verbose_name=u'Режим работы', blank=True, null=True )
     html = models.TextField( verbose_name=u'Страница в формате html', blank=True, null=True )
     master = models.ForeignKey( Contragent, verbose_name=u'Организация владелец', related_name='master_dismantle', blank=True, null=True )
+    owner =  models.ForeignKey( User, verbose_name=u'Владелец' )
     class Meta:
       verbose_name = u'Авторазборка'
       
@@ -276,9 +291,24 @@ class DismantleModel( models.Model ):
     dismantle = models.ForeignKey( Dismantle, verbose_name=u'Разборка' )
     manufacture = models.ForeignKey( Manufacture, verbose_name=u'Марка' )
     model = models.ForeignKey( Model, verbose_name=u'Модель' )
+    from_year = models.IntegerField( choices=FOUNDATION_YEAR, verbose_name=u'Год (с какого)', null=True, blank=True )
+    to_year = models.IntegerField( choices=FOUNDATION_YEAR, verbose_name=u'Год (по какой)', null=True, blank=True )
     representation = models.IntegerField( choices=PERSENT_VALUE, verbose_name=u'Представленность запчастей в %' )
 
 class Settings( models.Model ):
     yandex_map_key = models.CharField( max_length=256, verbose_name=u'API-ключ Яндекс', blank=True, null=True )
     
-      
+#-----------------------------------------------------
+class TodoList(models.Model):
+    name = models.CharField(max_length=100)
+ 
+    def __unicode__(self):
+        return self.name
+ 
+class TodoItem(models.Model):
+    name = models.CharField(max_length=150, help_text="e.g. Buy milk, wash dog etc")
+    list = models.ForeignKey(TodoList)
+ 
+    def __unicode__(self):
+        return self.name + " (" + str(self.list) + ")"
+        

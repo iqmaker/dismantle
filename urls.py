@@ -15,6 +15,8 @@ urlpatterns = patterns('',
     (r'^registration/$', 'dismantle.core.views.registration' ),
     (r'^profile/$', 'dismantle.core.views.profile' ),
     (r'^restorepassword/$', 'dismantle.core.views.restorepassword' ),
+    (r'^dismantle-add/$', 'dismantle.core.views.dismantle_editor' ),
+    (r'^dismantle-edit/(?P<dismantle_id>\d{1,6})$', 'dismantle.core.views.dismantle_editor' ),
 )
 
 if settings.DEBUG:

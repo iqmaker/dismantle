@@ -1,0 +1,5 @@
+    {% if form.%s.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.%s.errors }}</p></td></tr> {% endif %}
+    <tr>
+        <td>{{ form.%s.label_tag }}</td>
+        <td>{{ form.%s }}</td>
+    </tr>

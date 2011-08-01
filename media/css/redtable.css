@@ -1,6 +1,6 @@
 table {
 	color: #7F7F7F;
-	font: 0.8em/1em "Trebuchet MS",Verdana,sans-serif;
+	font: 0.8em/1em Arial,Helvetica,sans-serif;
 	border-collapse: collapse
 }
 table,caption {
@@ -9,28 +9,34 @@ table,caption {
 	border-left: 0px solid #CCC
 }
 caption,th,td {
-	border-left: 0;
-	padding: 5px
+    font-size: 1.0em;
+    line-height: 13px;
+    border-bottom: 1px solid #eee;
+    vertical-align: top;
+    padding: 5px;
+/*     font-family: "Lucida Grande", Verdana, Arial, sans-serif; */
 }
 
 
 caption,thead th,tfoot th,tfoot td {
 	background-color: #F7F7F7;
 	color: #666;
-	font-weight: bold;
+/* 	font-weight: bold; */
 	text-transform: uppercase
 }
 thead th {
 	background-color: #C30;
 	color: #FFB3A6;
-	text-align: center
+	text-align: left;
 }
 tbody th {
-	padding: 5px
+	padding: 5px;
+        text-align:left;
 }
 tbody tr.odd {
 	background-color: #F7F7F7;
-	color: #666
+	color: #666;
+        text-align:left;
 }
 
 tbody tr.split {
@@ -51,11 +57,11 @@ tbody tr:hover {
 	color: #333
 }
 tbody tr:hover a {
-	background-color: #FFF
+	background-color: #EEE
 }
 tbody td+td+td+td a {
 	color: #C30;
-	font-weight: bold;
+/* 	font-weight: bold; */
 	border-bottom: 0
 }
 tbody td+td+td+td a:active,tbody td+td+td+td a:hover,tbody td+td+td+td a:focus,tbody td+td+td+td a:visited {
@@ -63,7 +69,7 @@ tbody td+td+td+td a:active,tbody td+td+td+td a:hover,tbody td+td+td+td a:focus,t
 }
 tbody td a {
 	margin: 0 auto;
-	display: block;
+/* 	display: block; */
 	width: 10px;
 	height: 10px;
 	text-indent: -999em;
@@ -72,4 +78,8 @@ tbody td a {
 tbody a:visited:after {
 	font-family: Verdana,sans-serif;
 	content: "\00A0\221A"
+}
+tfoot td {
+    border-bottom: none;
+    border-top: 1px solid #ddd;
 }

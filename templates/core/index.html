@@ -97,9 +97,9 @@
         {% endif %}
         <form action="" method="post" style="margin:5px;">
             {% csrf_token %}
-            <tr><th><label for="manufacture">Марка:</label></th><td>
+            <label for="manufacture">Марка:</label>
             {{ DismantleSearchForm.manufacture }} 
-            <tr><th><label for="model">Модель:</label></th><td>
+            <label for="model">Модель:</label>
             {{ DismantleSearchForm.model }} 
             <input id="search_button" type="submit" value="Поиск">
         </form>
@@ -109,17 +109,18 @@
 
 	{% if contragents %}
 			{% for item in contragents %}
+            <div class="presentation">
             <table style="width:100%;">
                 <tbody>
                     <tr class="odd">
-                        <td><p class="title">{{item.title}}</p></td>
+                        <td><div class="title">{{item.title}}</div></td>
                     </tr>
                     <tr>
                         <td>
-                            <p class="address">{{item.address}}</p>
-                            <p class="phone">{{item.phone}}</p>
+                            <div class="address">{{item.address}}</div>
+                            <div class="phone">{{item.phone}}</div>
                             {% if item.short_remark %}
-                                <p>{{item.short_remark}}</p>
+                                <div class="short_remark">{{item.short_remark}}</div>
                             {% endif %}
                         </td>
                     </tr>
@@ -131,6 +132,7 @@
                     </tr>
                 </tfoot>
             </table>
+            </div>
 	{% else %}
 			<h2>К сожалению организации занимающиеся данной маркой автомобиля не найдены</h2>
 

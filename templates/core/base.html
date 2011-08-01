@@ -7,7 +7,8 @@
 	<link rel="stylesheet" href="{{ MEDIA_URL }}css/style.css" type="text/css">
 	<link rel="stylesheet" href="{{ MEDIA_URL }}css/doc.css" type="text/css">
 	<link rel="stylesheet" href="{{ MEDIA_URL }}css/redtable.css" type="text/css">
-	
+	{% block head %} 
+        {% endblock %}
     <title>{% if SITE_NAME %}{{ SITE_NAME }} : {% endif %}{% block head_title %}{% endblock %}</title>      
     
     {% block extra_head_base %}
@@ -30,7 +31,7 @@
             <ul class="buttons top_bound">
                 {% block main_button %}<li class=""><a href="/">Главная</a></li> {%endblock%}
                 {% block blogs_button %}<li class=""><a href="/razborka/blogs">Статьи</a></li>{%endblock%}
-                {% block dismantle_add_button %}<li class=""><a href="/razborka/dismantle-add">Добавить разборку</a></li>{%endblock%}
+                {% block dismantle_add_button %}<li class=""><a href="/dismantle-add">Добавить разборку</a></li>{%endblock%}
                 {% block about_button %}<li class=""><a href="/razborka/about">О проекте</a></li>{%endblock%}
 <!--                 {% block feedback_button %}<li class=""><a href="/razborka/feedback">Администрация сайта</a></li>{%endblock%} -->
             </ul>

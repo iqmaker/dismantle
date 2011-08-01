@@ -13,24 +13,32 @@
 {% if form.login.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.login.errors }}</p></td></tr> {% endif %}
 <tr>
     <td>{{ form.login.label_tag }}</td>
-    <td>{{ form.login }}</td>
+    <td class="big">{{ form.login }}</td>
 </tr>
 {% if form.email.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.email.errors }}</p></td></tr> {% endif %}
 <tr>
     <td>{{ form.email.label_tag }}</td>
-    <td>{{ form.email }}</td>
+    <td class="big">{{ form.email }}</td>
 </tr>
 {% if form.password.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.password.errors }}</p></td></tr> {% endif %}
 <tr>
     <td>{{ form.password.label_tag }}</td>
-    <td>{{ form.password }}</td>
+    <td class="big">{{ form.password }}</td>
 </tr>
 {% if form.username.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.username.errors }}</p></td></tr> {% endif %}
 <tr>
     <td>{{ form.username.label_tag }}</td>
-    <td>{{ form.username }}</td>
+    <td class="big">{{ form.username }}</td>
 </tr>
 <tr>
+
+{% if form.phone.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.phone.errors }}</p></td></tr> {% endif %}
+<tr>
+    <td>{{ form.phone.label_tag }}</td>
+    <td class="big">{{ form.phone }}</td>
+</tr>
+<tr>
+
     <td> <input type="hidden" name="next" value="{{ next }}" /> </td>
     <td> <input type="submit" class="Registration" value="Регистрация" /> </td>
 </tr>

@@ -124,6 +124,14 @@ CONTRAGENT_STATUS = (
   (CS_REMOVED, u'Удаленный'),
 )
 
+CONTACT_ACTIVE, CONTACT_BLOCKED, CONTACT_HIDE, CONTACT_REMOVED = [ 1, 2, 3, 4 ]
+CONTACT_STATUS = (
+  (CONTACT_ACTIVE, u'Активный'),
+  (CONTACT_BLOCKED, u'Заблокированный'),
+  (CONTACT_HIDE, u'Скрыт'),
+  (CONTACT_REMOVED, u'Удаленный'),
+)
+
 DOORS_COUNT = ( [(x,str(x)) for x in range(1,10)] ) 
 
 KPP_MECHANIC, KPP_AUTO, KPP_VARIATOR = [ 1, 2, 3 ]

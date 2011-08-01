@@ -2,19 +2,80 @@ body {
     color:#555;
     margin:0;
     padding-left: 1em;
-    font-family:sans-serif;
+/*     font-family:sans-serif; */
+    font-family:Arial,Helvetica,sans-serif;
     background:white;
 }
-
-#id_manufacture { 
-    font-size:22px;
+div.main { 
+    margin-left:20px; 
+    margin-top:10px; 
+    margin-right:10px; 
+    padding-left:20px;
+    
+}
+table.block { 
+    border-bottom:1px solid #CACACA; 
+    border-right:1px solid #CACACA; 
+    border-top:1px solid #CACACA; 
+    border-left:1px solid #CACACA; 
+    background-color:#F5FFEC;
+    width:100%;
+    border:0px;
 }
 
-#id_model { 
+ul.errorlist { 
+    color:red;
+}
+label { 
+    font-weight: normal;
+}
+table.fat { 
+    width:100%;
+} 
+
+div.basefields { 
+    float:left;
+    width:70%;
+    font-size: 1.0em;
+    font-family: "Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif;
+    color: #333;
+}
+input[type=text], input[type=password], textarea, select, .vTextField {
+    border: 1px solid #ccc;
+    width: 382px;
+}
+
+textarea { 
+    height: 72px;
+}
+input[type=text], input[type=password], select { 
+    height: 24px;
+    width: 382px;
+}
+
+div.models { 
+    float:left;
+    width:70%;
+}
+
+div.images { 
+    float:left;
+    width:70%;
+}
+div.input_buttons { 
+    float:right;
+    width:70%;
+}
+
+#id_manufacture, #id_model { 
     font-size:22px;
+    height: auto;
+    width: auto;
 }
 #search_button { 
-    font-size:22px;
+  font-size:22px;  
+  height: auto;
+  width: auto;
 }
 
 #search_elements { 
@@ -28,24 +89,48 @@ body {
     margin:5px;
 }
 
+h1.center{
+    text-align:left;
+}
 
-p.title {
+
+div.title {
     color:#666666;
     font-weight:bold;
     font-size:18px;
-    text-transform: uppercase;
+/*     text-transform: uppercase; */
+    margin-left:10px;
 }
-p.phone { 
-    font-weight:bold;  
+div.phone { 
+/*     font-weight:bold;   */
     color:#D76B40;
+    font-size:1.2em;
+    margin-bottom:5px;
 }
-p.address {
-    font-weight:bold; 
+div.address {
+    font-weight:normal; 
+    font-size:1.2em;
+    margin-bottom:5px;
+}
+
+div.short_remark{ 
+    margin-bottom:5px;
+    font-size:1.2em;
+}
+div.presentation{
+    width:100%;
+/*     #height:20%;  */
 }
 p.ErrorMessage{
     text-align:center;
-    text-transform:uppercase;
     color:red;
+}
+
+p.ErrorMessageLeft{ 
+    font-size:0.8em;
+    text-align:left;
+    color:red;
+/*     padding-left:16%; */
 }
 
 p.Notification{
@@ -165,7 +250,14 @@ html, body, #wrap {height: 100%;}
 
 body > #wrap {height: auto; min-height: 100%;}
 
-#id_username, #id_password, #id_email, #id_login, #id_account_state {
+a.delete_model, a.delete_image { 
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;  
+    font-size:0.8em;
+    color:#A0A0A0;
+    text-decoration: underline;
+}
+
+td.big > input {
     background-color: white;
     border-bottom-color: rgba(82, 168, 236, 0.746094);
     border-bottom-left-radius: 4px;
@@ -348,4 +440,45 @@ ul.buttons.big2 > li > a {
 ul.buttons.green > li > a,
 ul.buttons > li.selected > a {
     color:white;
+}
+textarea {
+    vertical-align: top !important;
+}
+/* MODULES */
+
+.module {
+    border: 1px solid #ccc;
+    margin-bottom: 5px;
+    background: white;
+}
+
+.module p, .module ul, .module h3, .module h4, .module dl, .module pre {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.module blockquote {
+    margin-left: 12px;
+}
+
+.module ul, .module ol {
+    margin-left: 1.5em;
+}
+
+.module h3 {
+    margin-top: .6em;
+}
+
+.module h2, .module caption, .inline-group h2 {
+    margin: 0;
+    padding: 2px 5px 3px 5px;
+    font-size: 11px;
+    text-align: left;
+    font-weight: bold;
+    background: #7CA0C7 url(../img/admin/default-bg.gif) top left repeat-x;
+    color: white;
+}
+
+.module table {
+    border-collapse: collapse;
 }

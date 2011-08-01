@@ -1,2 +1,297 @@
 {% extends "core/base.html" %}
-{% block dismantle_add_button %}<li class="selected"><a href="/">Добавить разборку</a></li> {%endblock%}
+{% block head %} 
+<!--     <link rel="stylesheet" href="{{ MEDIA_URL }}css/base.css" type="text/css"> -->
+<!--     <link rel="stylesheet" href="{{ MEDIA_URL }}css/forms.css" type="text/css"> -->
+{% endblock %}
+
+{% block extra_head_base %}
+<script type="text/javascript">
+function cloneMore(selector, prefix ) { 
+    var newElement = $(selector).clone(true); 
+    var total = $('#id_' + prefix + '-TOTAL_FORMS').val(); 
+    newElement.find(':input').each(function() { 
+        var name = $(this).attr('name').replace('-' + (total-1) + '-','-' + total + '-'); 
+        var id = 'id_' + name; 
+        $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked'); 
+    }); 
+    newElement.find('label').each(function() { 
+        var newFor = $(this).attr('for').replace('-' + (total-1) + '-','-' + total + '-'); 
+        $(this).attr('for', newFor); 
+    }); 
+    total++; 
+    $('#id_' + prefix + '-TOTAL_FORMS').val(total); 
+    $(selector).after(newElement); 
+} 
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+  // Code adapted from http://djangosnippets.org/snippets/1389/
+ 
+  function updateElementIndex(el, prefix, ndx) {
+    var id_regex = new RegExp('(' + prefix + '-\\d+-)');
+    var replacement = prefix + '-' + ndx + '-';
+    if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex,
+ replacement));
+    if (el.id) el.id = el.id.replace(id_regex, replacement);
+    if (el.name) el.name = el.name.replace(id_regex, replacement);
+  }
+ 
+ 
+  $("#add_model").click(function() {
+     //return addForm(this, "models");
+     cloneMore('div.model:last', 'models');
+  });
+ 
+  $("#add_image").click(function() {
+     //return addForm(this, "images");
+     cloneMore('div.image:last', 'images');
+  });
+
+  $(".delete_model").click(function() {
+    //return deleteForm(this, "models");
+    var prefix = 'models'; var div_class = 'model';
+    
+    var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+    if (formCount > 1) {
+        $(this).parents("div:first").remove();
+        $('#id_' + prefix + '-TOTAL_FORMS').val( --formCount );
+
+        var divs = $( 'div.' + div_class ); 
+        var i = 0;
+        for (formCount = divs.length; i < formCount; i++) {
+            $(divs.get(i)).children().children().children().children().children().each(function() {
+                updateElementIndex(this, prefix, i);
+            });
+        }
+    } 
+  });
+
+  $(".delete_image").click(function() {
+    //return deleteForm(this, "images");
+    var prefix = 'images'; var div_class = 'image';
+    
+    var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+    if (formCount > 1) {
+        $(this).parents("div:first").remove();
+        $('#id_' + prefix + '-TOTAL_FORMS').val( --formCount );
+
+        var divs = $( 'div.' + div_class ); 
+        var i = 0;
+        for (formCount = divs.length; i < formCount; i++) {
+            $(divs.get(i)).children().children().children().children().children().each(function() {
+                updateElementIndex(this, prefix, i);
+            });
+        }
+    } 
+  });
+});
+</script>
+<script src="{{ MEDIA_URL }}js/country.js" type="text/javascript"></script>
+{% endblock %}
+{% block body_outer %}
+<div class="title">
+    <h2 class="center">{{locale_names.action}} разборки</h2>
+</div>
+<div class="main">
+
+{% if form.errors %}
+    <div><p class="ErrorMessageLeft">Пожалуйста исправьте ошибки заполнения, указанные ниже</p></div>
+{% endif %}
+
+<form method="post" enctype="multipart/form-data" action="">
+{% csrf_token %}
+{{ form.dismantle_id }}
+<div class="basefields">
+<fieldset class="module">
+    <legend>Информация о разборке </legend>
+<table class="fat">
+    {% if form.title.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.title.errors }}</p></td></tr> {% endif %}
+    <tr>
+        <td>{{ form.title.label_tag }}</td>
+        <td>{{ form.title }}</td>
+    </tr>
+
+    {% if form.logo.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.logo.errors }}</p></td></tr> {% endif %}
+    <tr>
+        <td>{{ form.logo.label_tag }}</td>
+        <td>{{ form.logo }} {%if locale_names.contragent_logo %} <a target="_blank" href="{{locale_names.contragent_logo}}">сейчас</a>{% endif %}</td>
+    </tr>
+
+    {% if form.foundation_year.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.foundation_year.errors }}</p></td></tr> {% endif %}
+    <tr>
+        <td>{{ form.foundation_year.label_tag }}</td>
+        <td>{{ form.foundation_year }}</td>
+    </tr>
+
+    {% if form.state.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.state.errors }}</p></td></tr> {% endif %}
+    <tr>
+        <td>{{ form.state.label_tag }}</td>
+        <td>{{ form.state }}</td>
+    </tr>
+
+    {% if form.region.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.region.errors }}</p></td></tr> {% endif %}
+    <tr>
+        <td>{{ form.region.label_tag }}</td>
+        <td>{{ form.region }}</td>
+    </tr>
+
+    {% if form.city.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.city.errors }}</p></td></tr> {% endif %}
+    <tr>
+        <td>{{ form.city.label_tag }}</td>
+        <td>{{ form.city }}</td>
+    </tr>
+
+    {% if form.address.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.address.errors }}</p></td></tr> {% endif %}
+    <tr>
+        <td>{{ form.address.label_tag }}</td>
+        <td>{{ form.address }}</td>
+    </tr>
+
+    {% if form.car_service.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.car_service.errors }}</p></td></tr> {% endif %}
+    <tr>
+        <td>{{ form.car_service.label_tag }}</td>
+        <td>{{ form.car_service }}</td>
+    </tr>
+
+    {% if form.purchase_vehicles.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.purchase_vehicles.errors }}</p></td></tr> {% endif %}
+    <tr>
+        <td>{{ form.purchase_vehicles.label_tag }}</td>
+        <td>{{ form.purchase_vehicles }}</td>
+    </tr>
+
+    {% if form.new_parts.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.new_parts.errors }}</p></td></tr> {% endif %}
+    <tr>
+        <td>{{ form.new_parts.label_tag }}</td>
+        <td>{{ form.new_parts }}</td>
+    </tr>
+
+    {% if form.send_regions.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.send_regions.errors }}</p></td></tr> {% endif %}
+    <tr>
+        <td>{{ form.send_regions.label_tag }}</td>
+        <td>{{ form.send_regions }}</td>
+    </tr>
+
+    {% if form.local_delivery.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.local_delivery.errors }}</p></td></tr> {% endif %}
+    <tr>
+        <td>{{ form.local_delivery.label_tag }}</td>
+        <td>{{ form.local_delivery }}</td>
+    </tr>
+
+    {% if form.schedule.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.schedule.errors }}</p></td></tr> {% endif %}
+    <tr>
+        <td>{{ form.schedule.label_tag }}</td>
+        <td>{{ form.schedule }}</td>
+    </tr>
+
+    {% if form.phone.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.phone.errors }}</p></td></tr> {% endif %}
+    <tr>
+        <td>{{ form.phone.label_tag }}</td>
+        <td>{{ form.phone }}</td>
+    </tr>
+
+    {% if form.fax.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.fax.errors }}</p></td></tr> {% endif %}
+    <tr>
+        <td>{{ form.fax.label_tag }}</td>
+        <td>{{ form.fax }}</td>
+    </tr>
+
+    {% if form.email.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.email.errors }}</p></td></tr> {% endif %}
+    <tr>
+        <td>{{ form.email.label_tag }}</td>
+        <td>{{ form.email }}</td>
+    </tr>
+
+    {% if form.url.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.url.errors }}</p></td></tr> {% endif %}
+    <tr>
+        <td>{{ form.url.label_tag }}</td>
+        <td>{{ form.url }}</td>
+    </tr>
+
+    {% if form.skype.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.skype.errors }}</p></td></tr> {% endif %}
+    <tr>
+        <td>{{ form.skype.label_tag }}</td>
+        <td>{{ form.skype }}</td>
+    </tr>
+
+    {% if form.jabber.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.jabber.errors }}</p></td></tr> {% endif %}
+    <tr>
+        <td>{{ form.jabber.label_tag }}</td>
+        <td>{{ form.jabber }}</td>
+    </tr>
+
+    {% if form.icq.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.icq.errors }}</p></td></tr> {% endif %}
+    <tr>
+        <td>{{ form.icq.label_tag }}</td>
+        <td>{{ form.icq }}</td>
+    </tr>
+
+    {% if form.short_remark.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.short_remark.errors }}</p></td></tr> {% endif %}
+    <tr>
+        <td>{{ form.short_remark.label_tag }}</td>
+        <td>{{ form.short_remark }}</td>
+    </tr>
+
+    {% if form.remark.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.remark.errors }}</p></td></tr> {% endif %}
+    <tr>
+        <td>{{ form.remark.label_tag }}</td>
+        <td>{{ form.remark }}</td>
+    </tr>
+
+    {% if form.html.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.html.errors }}</p></td></tr> {% endif %}
+    <tr>
+        <td>{{ form.html.label_tag }}</td>
+        <td>{{ form.html }}</td>
+    </tr>
+
+    </table>
+    </fieldset>
+</div>
+<div class="models"> 
+    {{ models_formset.management_form }}
+  <fieldset class="module">
+    <legend>Марки и модели автомобилей разборки</legend>
+        {% for fs in models_formset.forms %}
+         <div class="model">
+            <table class="block">
+            {{ fs.as_table }}
+             </table>
+                <p style=""><a class="delete_model" href="#">Удалить</a></p>
+             <p></p>
+          </div>
+        {% endfor %}
+        <input type="button" value="Добавить модель" id="add_model"> 
+  </fieldset>
+</div>
+    
+<div class="images">
+    {{ images_formset.management_form }}
+  <fieldset class="module" >
+    <legend>Фото, схемы проезда и прочие изображения</legend>     
+        {% for fi in images_formset.forms %}
+          <div class="image">
+            <table class="block">
+            {{ fi.as_table }}
+             </table>
+                <p style=""><a class="delete_image" href="#">Удалить</a></p>
+            <p></p>
+          </div>
+        {% endfor %}
+        <input type="button" value="Добавить изображение" id="add_image"> 
+    </fieldset>
+</div>
+
+<div class="input_buttons">
+<table>
+    <tr>
+        <td> <input type="hidden" name="next" value="{{ next }}" /> </td>
+        <td> <input type="submit" class="Registration" value="Сохранить" /> </td>
+    </tr>
+</table>
+</div>
+
+</form>
+</div>
+<p class="downspace"></p>
+{% endblock %}
+
+{% block dismantle_add_button %}<li class="selected"><a href="/dismantle-add">Добавить разборку</a></li> {%endblock%}
