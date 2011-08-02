@@ -53,7 +53,11 @@ class DismantleModelForm( Form ):
     from_year = forms.ChoiceField( choices=enums.FOUNDATION_YEAR, label=u'Год (с какого)', required=True )
     to_year = forms.ChoiceField( choices=enums.FOUNDATION_YEAR, label=u'Год (по какой)', required=True )
     representation = forms.ChoiceField( choices=enums.PERSENT_VALUE, label=u'Представленность запчастей в %', required=False )
-
+    
+    def __init__(self, *args, **kwargs):
+        super(DismantleModelForm, self).__init__(*args, **kwargs)
+        self.fields['manufacture'].widget.attrs['onchange'] = "DynamicModels(this);"
+        
 class ImageForm( Form ):
     imageid = forms.IntegerField(widget=forms.HiddenInput, required=False) 
     title = forms.CharField( max_length=250, label=u'Название', required=True )
