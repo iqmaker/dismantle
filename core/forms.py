@@ -49,7 +49,7 @@ class DismantleAddForm( ModelForm ):
 class DismantleModelForm( Form ):
     modelid = forms.IntegerField(widget=forms.HiddenInput, required=False) 
     manufacture = CustomModelChoiceField( queryset=Manufacture.objects.all(), label=u'Марка автомобиля',  required=True, empty_label=u"не выбрано",  )
-    model = CustomModelChoiceField( queryset=Model.objects.filter( id=1 ), check_queryset=Model.objects.all(), label=u'Модель', required=True, empty_label=u"любая модель") 
+    model = CustomModelChoiceField( queryset=Model.objects.all(), check_queryset=Model.objects.all(), label=u'Модель', required=True, empty_label=u"любая модель") 
     from_year = forms.ChoiceField( choices=enums.FOUNDATION_YEAR, label=u'Год (с какого)', required=True )
     to_year = forms.ChoiceField( choices=enums.FOUNDATION_YEAR, label=u'Год (по какой)', required=True )
     representation = forms.ChoiceField( choices=enums.PERSENT_VALUE, label=u'Представленность запчастей в %', required=False )

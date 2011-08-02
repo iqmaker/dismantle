@@ -547,8 +547,11 @@ def dismantle_editor( request, dismantle_id=-1 ):
             for model in models_formset.forms:
                 if model.is_valid():
                     if model.cleaned_data['modelid']:
-                        dm = DismantleModel.objects.get( pk=model.cleaned_data['modelid'] )
-                        not_removed_models.append( dm.pk )
+                        try:
+                            dm = DismantleModel.objects.get( pk=model.cleaned_data['modelid'] )
+                            not_removed_models.append( dm.pk )
+                        except:
+                            dm = DismantleModel()
                     else:
                         dm = DismantleModel()
                 
@@ -573,8 +576,11 @@ def dismantle_editor( request, dismantle_id=-1 ):
                     
                     DBOUT( image.cleaned_data )
                     if image.cleaned_data['imageid']:
-                        cp = ContragentPicture.objects.get( pk=image.cleaned_data['imageid'] )
-                        not_removed_images.append( cp.pk )
+                        try:
+                            cp = ContragentPicture.objects.get( pk=image.cleaned_data['imageid'] )
+                            not_removed_images.append( cp.pk )
+                        except:
+                            cp = ContragentPicture()  
                     else:
                         cp = ContragentPicture()  
                     

@@ -88,8 +88,9 @@ $(document).ready(function() {
 
 </script>
 <script src="{{ MEDIA_URL }}js/country.js" type="text/javascript"></script>
-<script src="{{ MEDIA_URL }}js/manufacture_models.js" type="text/javascript"></script>
 <script src="{{ MEDIA_URL }}js/models.js" type="text/javascript"></script>
+<script src="{{ MEDIA_URL }}js/manufacture_models.js" type="text/javascript"></script>
+
 {% endblock %}
 {% block body_outer %}
 <div class="title">
@@ -298,3 +299,4 @@ $(document).ready(function() {
 {% endblock %}
 
 {% block dismantle_add_button %}<li class="selected"><a href="/dismantle-add">Добавить разборку</a></li> {%endblock%}
+{% block body_initialize %}ReinitElements();{% endblock %}
