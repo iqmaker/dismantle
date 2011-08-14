@@ -146,14 +146,17 @@ def update_city_coordinates():
             #print( address.encode( "utf-8" ), coord  )
             city.latitude, city.longitude = coord
             city.save()
-        
+
+def check_contragent_coordinates( c ):
+    if (not c.latitude or not c.longitude) or (c.latitude==0.0 or c.longitude==0.0):
+        coord = get_coordinates_yandex( c.address )
+        c.latitude, c.longitude = coord
+        c.save()
+    
 def update_contragent_coordinates():
     contragents = Contragent.objects.order_by('title')
     for i in contragents:
-        if (not i.latitude or not i.longitude) or (i.latitude==0.0 or i.longitude==0.0):
-            coord = get_coordinates_yandex( i.address )
-            i.latitude, i.longitude = coord
-            i.save()
+        check_contragent_coordinates(i)
 
 def blogs(request):
     regionid = get_region( request )
@@ -325,9 +328,14 @@ def mylogout(request):
 
 def registration( request ):
     if request.method == 'POST':
-        form = UserProfileForm( request.POST )
+        form = UserRegistrationForm( request.POST, request=request )
         if form.is_valid():
-            last, first, second = [ x.strip() for x in form.cleaned_data['username'].split(',') ]
+            fullname = form.cleaned_data['username']
+            if len( fullname.split( ',' ) ) >=3:
+                last, first, second = [ x.strip() for x in fullname.split(',') ][:3]
+            else:
+                last, first, second = [ x.strip() for x in fullname.split(' ') ][:3]
+                
             u = User( first_name=first, 
                          last_name=last,  
                          username=form.cleaned_data['login'], 
@@ -348,13 +356,13 @@ def registration( request ):
                         reg_date = datetime.datetime.now(),
                         status = enums.CONTACT_ACTIVE,
                         phone = form.cleaned_data['phone'].strip(),
-                        account_state = 0.0 )
+                        user_balance = 0.0 )
             p.save()
             auser = authenticate(username=u.username, password=p.raw_password)
             login( request, auser)
             return HttpResponseRedirect( "/" )
     else:
-        form = UserProfileForm()
+        form = UserRegistrationForm()
         
     return render_to_response( 'core/registration.html',
                             {'form': form,
@@ -362,6 +370,34 @@ def registration( request ):
                             }, 
                             context_instance=RequestContext(request))
 
+def changepassword( request ):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect( "/login" )
+        
+    u = User.objects.get( id = request.user.pk )
+    
+    if request.method == 'POST':
+        form = ChangePasswordForm( request.POST, request=request )
+        if form.is_valid():
+            new = form.cleaned_data['new_password']
+            p = Person.objects.get( user = u )
+            u.set_password( new )
+            p.raw_password = new
+            p.save()
+            form.message = 'Пароль изменен'
+    else:
+        form = ChangePasswordForm()
+        
+    return render_to_response( 'core/changepassword.html',
+                            {'form': form,
+                             'login':u.username,
+                             'next': 'core/restorepassword.html',
+                            }, 
+                            context_instance=RequestContext(request))  
+        
+    
+                
+    
 def restorepassword( request ):
     if request.user.is_authenticated():
         return HttpResponseRedirect( "/profile" )
@@ -400,20 +436,25 @@ def extract_phones( source ):
 def profile( request ):
     if not request.user.is_authenticated():
         return HttpResponseRedirect( "/login" )
-        
+      
+    u = User.objects.get( id = request.user.pk )
+    p = Person.objects.get( user = u )
+    dismantles = Dismantle.objects.filter( owner=request.user )
     if request.method == 'POST':
-        form = UserProfileForm( request.POST )
+        form = UserProfileForm( request.POST, request=request )
         if form.is_valid():
-            last, first, second = [ x.strip() for x in form.cleaned_data['username'].split(',') ]
             
-            u = User.objects.get( id = request.user.pk )
-            p = Person.objects.get( user = u )
+            fullname = form.cleaned_data['username']
+            if len( fullname.split( ',' ) ) >=3:
+                last, first, second = [ x.strip() for x in fullname.split(',') ][:3]
+            else:
+                last, first, second = [ x.strip() for x in fullname.split(' ') ][:3]
             
             u.username = form.cleaned_data['login'].strip()
             u.email = form.cleaned_data['email'].strip()
             u.first_name = first
             u.last_name = last;
-            u.set_password( form.cleaned_data["password"].strip() )
+            #u.set_password( form.cleaned_data["password"].strip() )
             
             p.second_name = second
             
@@ -424,14 +465,11 @@ def profile( request ):
         else:
             print 'not valid form data'
     else:
-        u = User.objects.get( id = request.user.pk )
-        
-        p = Person.objects.get( user = u )
         data = { 'username' : ', '.join( [u.last_name, u.first_name, p.second_name] ), 
                  'login':u.username, 
                  'email':u.email, 
                  'password':p.raw_password,
-                 'account_state':p.account_state,
+                 'user_balance':p.user_balance,
                  'phone':p.phone,
                  }
         form = UserProfileForm( data )
@@ -441,20 +479,11 @@ def profile( request ):
     return render_to_response( 'core/profile.html',
                             {'form': form,
                              'next': 'core/profile.html',
+                             'user':u,
+                             'dismantles':dismantles
                             }, 
                             context_instance=RequestContext(request))    
 
-        
-def contragent_logo( contragent_id ):
-    cp = ContragentPicture.objects.filter( contragent=contragent_id, title='logo' )
-    for i in cp:
-        return i
-    
-def remove_contragent_logo( contragent_id ):
-    cp = ContragentPicture.objects.filter( contragent=contragent_id, title='logo' )
-    DBOUT( cp )
-    for i in cp:
-        i.delete()
     
 def remove_dismantle_model( dismantle_id, notremove=[] ):
     dm = DismantleModel.objects.filter( dismantle=dismantle_id )
@@ -474,11 +503,13 @@ def remove_contragent_picture( contragent_id, notremove=[] ):
 def dismantle_editor( request, dismantle_id=-1 ):
     if not request.user.is_authenticated():
         return HttpResponseRedirect( "/login" )
+        
+    u = User.objects.get( id = request.user.pk )
     
     DismantleModelFormSet = formset_factory(DismantleModelForm, max_num=50)
     ImageFormSet = formset_factory(ImageForm, max_num=20 )
     
-    locale_names = { 'action':u'Добавление' }
+    locale_names = { 'action':u'Добавление-коррекция' }
     if request.method == 'POST':
         print request.POST
         print request.FILES
@@ -513,6 +544,7 @@ def dismantle_editor( request, dismantle_id=-1 ):
             d.car_service=form.cleaned_data['car_service']
             d.purchase_vehicles=form.cleaned_data['purchase_vehicles']
             d.new_parts=form.cleaned_data['new_parts']
+            d.contract_motor=form.cleaned_data['contract_motor']
             d.send_regions=form.cleaned_data['send_regions']
             d.local_delivery=form.cleaned_data['local_delivery']
             d.schedule=form.cleaned_data['schedule']
@@ -526,10 +558,24 @@ def dismantle_editor( request, dismantle_id=-1 ):
             d.short_remark=form.cleaned_data['short_remark']
             d.remark=form.cleaned_data['remark']
             d.html=form.cleaned_data['html'] 
-               
+            d.latitude = None
+            d.longitude = None
+
+#new            
+            if u'logo' in request.FILES:
+                p = Picture( title = 'logo',
+                            description = 'logo',
+                            picture = form.cleaned_data[ 'logo' ],
+                            pub_date = datetime.datetime.now() )
+                p.save()
+                d.logo = p
+            else:
+                DBOUT( "NO LOGO" )
+#endnew                
             d.save()
-            dismantle_id = d.id
+            dismantle_id = d.id 
             
+            """
             if u'logo' in request.FILES:
                 remove_contragent_logo( dismantle_id )
                 logo = ContragentPicture( title = 'logo',
@@ -538,6 +584,7 @@ def dismantle_editor( request, dismantle_id=-1 ):
                                                 pub_date = datetime.datetime.now(),
                                                 contragent = d )
                 logo.save()
+            """
             
             request.POST['dismantle_id'] = dismantle_id
             form = DismantleAddForm( request.POST, request.FILES )
@@ -614,11 +661,13 @@ def dismantle_editor( request, dismantle_id=-1 ):
             try:
                 d = Dismantle.objects.get( id=dismantle_id )
                 d.last_editing = datetime.datetime.now()
+                if d.owner_id != u.id and not u.is_superuser:
+                    raise Http404
             except:
                 raise Http404 
             
             
-            
+            DBOUT( d.logo )
             main_form_data = { 'title':d.title,
                                 'logo':d.logo,
                                 'foundation_year':d.foundation_year,
@@ -629,6 +678,7 @@ def dismantle_editor( request, dismantle_id=-1 ):
                                 'car_service':d.car_service,
                                 'purchase_vehicles':d.purchase_vehicles,
                                 'new_parts':d.new_parts,
+                                'contract_motor':d.contract_motor,
                                 'send_regions':d.send_regions,
                                 'local_delivery':d.local_delivery,
                                 'schedule':d.schedule,
@@ -644,9 +694,8 @@ def dismantle_editor( request, dismantle_id=-1 ):
                                 'html':d.html, 
                                 'dismantle_id': dismantle_id }
                                 
-            clogo = contragent_logo( dismantle_id )
-            if clogo:
-                locale_names['contragent_logo'] = clogo.picture.url
+            if d.logo:
+                locale_names['contragent_logo'] = d.logo.picture.url
                          
             form = DismantleAddForm( main_form_data )
             
@@ -701,6 +750,58 @@ def dismantle_editor( request, dismantle_id=-1 ):
                             }, context_instance=RequestContext(request)  )
                             
 
+def dismantle_view( request, dismantle_id ):
+    try:
+        d = Dismantle.objects.get( id=dismantle_id )
+    except:
+        raise Http404
+    locale_names = {}
+    check_contragent_coordinates( d )
+    dismantle_models = DismantleModel.objects.filter( dismantle=d )
+    contragent_pictures = ContragentPicture.objects.filter( contragent=d )
+    
+    manufactures = set()
+    for i in dismantle_models:
+        manufactures.add( i.manufacture.title.lower() )
+    
+    main_form_data = { 'title':d.title,
+                                'logo':d.logo,
+                                'foundation_year':d.foundation_year,
+                                'state':d.state,
+                                'region':d.region,
+                                'city':d.city,
+                                'address':d.address,
+                                'car_service':d.car_service,
+                                'purchase_vehicles':d.purchase_vehicles,
+                                'new_parts':d.new_parts,
+                                'contract_motor':d.contract_motor,
+                                'send_regions':d.send_regions,
+                                'local_delivery':d.local_delivery,
+                                'schedule':d.schedule,
+                                'phone':d.phone,
+                                'fax':d.fax,
+                                'email':d.email,
+                                'url':d.url,
+                                'skype':d.skype,
+                                'jabber':d.jabber,
+                                'icq':d.icq,
+                                'short_remark':d.short_remark,
+                                'remark':d.remark,
+                                'html':d.html, 
+                                'dismantle_id': dismantle_id }
+                                
+    form = DismantleAddForm( main_form_data )
+                                
+    return render_to_response( 
+                            'core/dismantle-view.html', 
+                            {'dismantle':form,
+                             'd':d,
+                            'dismantle_models':dismantle_models,
+                            'contragent_pictures':contragent_pictures,
+                            'locale_names':locale_names,
+                            'manufactures':manufactures,
+                            }, context_instance=RequestContext(request)  )
+    
 #----------------------------------------
 def todolist(request):
     # This class is used to make empty formset forms required

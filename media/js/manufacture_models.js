@@ -17,6 +17,7 @@ $(function(){
 
 function ReinitElements()
 { 
+    //Reiniting makes and models
     for( var i = 0; i < 100; ++i ) 
     { 
         var manufacture = "id_models-" + i + "-manufacture";

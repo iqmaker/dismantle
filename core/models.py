@@ -1,15 +1,25 @@
 # -*- coding: utf-8 -*-
-# -*- coding: utf-8 -*-
 from django.db import models
 import os
 import settings
 import Image
 from django.template import Library
+from django import template
 from enums import *
 from django.contrib.auth.models import User
+import inspect
 
+def DBOUT( obj ):
+    """Returns the current line number in our program."""
+    print ">>>>>>>>>>>>>>>>>>: ", obj, ' LINE:', inspect.currentframe().f_back.f_lineno
+    
 register = Library()
 
+baloon_data = open( settings.TEMPLATE_DIRS[0] + 'core/baloon.html', 'r' ).read()
+
+def get_baloon_template():
+    return baloon_data
+    
 def thumbnail(file, size='200x200'):
     x, y = [int(x) for x in size.split('x')]
     
@@ -36,7 +46,7 @@ class Person( models.Model ):
     raw_password = models.CharField( max_length=128, verbose_name=u''  )
     birth_date = models.DateField( verbose_name=u'Дата рождения', blank=True, null=True )
     
-    account_state = models.FloatField( verbose_name=u'Состояние счета (руб)' )   
+    user_balance = models.FloatField( verbose_name=u'Сумма счета (руб)' )   
     reg_date = models.DateField( verbose_name=u'Дата регистрации', auto_now_add=True )
     status = models.IntegerField( choices=CONTACT_STATUS, verbose_name=u'Статус' )
     
@@ -92,6 +102,12 @@ class City( models.Model ):
     latitude = models.FloatField( verbose_name=u'Широта', blank=True, null=True )
     longitude = models.FloatField( verbose_name=u'Долгота', blank=True, null=True ) 
     
+    def dot_latitude( self ):
+        return str(self.latitude)
+        
+    def dot_longitude( self ):
+        return str(self.longitude)
+        
     def __unicode__(self):
       return self.title
       
@@ -261,6 +277,12 @@ class Contragent( models.Model ):
     main = models.ForeignKey( 'self', verbose_name=u'Вышестоящая организация', blank=True, null=True )
     last_editing = models.DateField( verbose_name=u'Дата последней коррекции', blank=True, null=True, auto_now_add=True )
     
+    def dot_latitude( self ):
+        return str(self.latitude)
+        
+    def dot_longitude( self ):
+        return str(self.longitude)
+        
     def __unicode__(self):
       return self.title
       
@@ -274,18 +296,35 @@ class ContragentPicture( Picture ):
     
 class Dismantle( Contragent ):
     #Добавить поля, Режим работы, Страница разборки в формате html
+    
     car_service= models.NullBooleanField( verbose_name=u'Свой автосервис', blank=True, null=True )
     purchase_vehicles= models.NullBooleanField( verbose_name=u'Скупка автомобилей на разборку', blank=True, null=True )
     new_parts= models.NullBooleanField( verbose_name=u'Наличие новых запчастей', blank=True, null=True )
+    contract_motor= models.NullBooleanField( verbose_name=u'Наличие контрактных двигателей', blank=True, null=True )
     send_regions= models.NullBooleanField( verbose_name=u'Отправка в регионы', blank=True, null=True )
     local_delivery= models.NullBooleanField( verbose_name=u'Местная доставка покупателю', blank=True, null=True )
     
     schedule = models.CharField( max_length=256, verbose_name=u'Режим работы', blank=True, null=True )
     html = models.TextField( verbose_name=u'Страница в формате html', blank=True, null=True )
     master = models.ForeignKey( Contragent, verbose_name=u'Организация владелец', related_name='master_dismantle', blank=True, null=True )
-    owner =  models.ForeignKey( User, verbose_name=u'Владелец' )
+    owner =  models.ForeignKey( User, verbose_name=u'Куратор организации' )
+    count_views = models.IntegerField( verbose_name=u'Количество показов' )
+    
     class Meta:
       verbose_name = u'Авторазборка'
+    
+    def baloon_small( self ):
+        t = template.Template( get_baloon_template().strip() )
+        #DBOUT( get_baloon_template() )
+        dismantle_models = DismantleModel.objects.filter( dismantle=self )
+        manufactures = set()
+        for i in dismantle_models:
+            manufactures.add( i.manufacture.title.lower() )
+        
+        c = template.Context({'d':self, 'manufactures':manufactures, 'MEDIA_URL':settings.MEDIA_URL } )
+        result = t.render(c)
+        return result
+
       
 class DismantleModel( models.Model ):
     dismantle = models.ForeignKey( Dismantle, verbose_name=u'Разборка' )
@@ -294,10 +333,38 @@ class DismantleModel( models.Model ):
     from_year = models.IntegerField( choices=FOUNDATION_YEAR, verbose_name=u'Год (с какого)', null=True, blank=True )
     to_year = models.IntegerField( choices=FOUNDATION_YEAR, verbose_name=u'Год (по какой)', null=True, blank=True )
     representation = models.IntegerField( choices=PERSENT_VALUE, verbose_name=u'Представленность запчастей в %' )
+    
 
 class Settings( models.Model ):
     yandex_map_key = models.CharField( max_length=256, verbose_name=u'API-ключ Яндекс', blank=True, null=True )
+
+
+class ArticleCategory( models.Model ):
+    title = models.CharField( max_length=150, verbose_name=u'Название категории')
     
+class ArticleGroup( models.Model ):
+    title = models.CharField( max_length=150, verbose_name="Название группы")
+    category = models.ForeignKey( ArticleCategory, verbose_name=u'Категория группы' )
+    
+class Article( models.Model ):
+    title = models.CharField( max_length=150, verbose_name=u'Название статьи')
+    category = models.ForeignKey( ArticleCategory, verbose_name=u'Категория' )
+    grup = models.ForeignKey( ArticleGroup, verbose_name=u'Группа' )
+    status = models.IntegerField( choices=ARTICLE_STATUS, verbose_name=u'Статус' )
+    reg_date = models.DateField( verbose_name=u'Дата создания', blank=True, null=True, auto_now_add=True )
+    last_editing = models.DateField( verbose_name=u'Дата последней коррекции', blank=True, null=True, auto_now_add=True )
+    body = models.TextField( verbose_name=u'Страница в формате html', blank=True, null=True )
+    owner =  models.ForeignKey( User, verbose_name=u'Автор' )
+
+class Payment( models.Model ):
+    title = models.CharField( max_length=150, verbose_name=u'Название')
+    currency = models.IntegerField( choices=CURRENCY,  verbose_name=u'Валюта', blank=True, null=True )
+    direction = models.IntegerField( choices=PAYMENT_DIRECTION, verbose_name=u'Направление' )
+    reg_date = models.DateField( verbose_name=u'Дата создания', auto_now_add=True )
+    user = models.ForeignKey( User, verbose_name=u'Пользователь' )
+    user_balance = models.FloatField( verbose_name=u'Баланс пользователя' )
+    remark = models.CharField( max_length=512, verbose_name=u'Краткое описание', blank=True, null=True )
+
 #-----------------------------------------------------
 class TodoList(models.Model):
     name = models.CharField(max_length=100)

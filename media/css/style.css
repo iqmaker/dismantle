@@ -6,6 +6,41 @@ body {
     font-family:Arial,Helvetica,sans-serif;
     background:white;
 }
+
+.thumbnail {
+    position: relative;
+    z-index: 0;
+    margin:10px;
+}
+
+.thumbnail:hover{
+    background-color: transparent;
+    z-index: 50;
+}
+
+.thumbnail span{ /*CSS for enlarged image*/
+    position: absolute;
+    background-color: lightyellow;
+    padding: 5px;
+    left: -1000px;
+    border: 1px dashed gray;
+    visibility: hidden;
+    color: black;
+    text-decoration: none;
+}
+
+.thumbnail span img{ /*CSS for enlarged image*/
+    border-width: 0;
+    padding: 2px;
+}
+
+.thumbnail:hover span { /*CSS for enlarged image on hover*/
+    visibility: visible;
+    top: 0;
+    left: 60px; /*position where enlarged image should offset horizontally */
+}
+
+
 div.main { 
     margin-left:20px; 
     margin-top:10px; 
@@ -13,6 +48,18 @@ div.main {
     padding-left:20px;
     
 }
+div.user_data { 
+    width:100%;
+    float:left;
+    margin:5px;
+}
+div.user_dismantles { 
+    width:100%;
+    float:left;
+    margin:10px;    
+    padding:10px;
+}
+
 table.block { 
     border-bottom:1px solid #CACACA; 
     border-right:1px solid #CACACA; 
@@ -26,8 +73,15 @@ table.block {
 ul.errorlist { 
     color:red;
 }
+
+ul, ol {
+    list-style: none;
+}
+
 label { 
-    font-weight: normal;
+    font-weight: bold;
+    font-size:1.0em;
+    color: #888;
 }
 table.fat { 
     width:100%;
@@ -42,7 +96,7 @@ div.basefields {
 }
 input[type=text], input[type=password], textarea, select, .vTextField {
     border: 1px solid #ccc;
-    width: 382px;
+    width: 95%;
 }
 
 textarea { 
@@ -50,7 +104,7 @@ textarea {
 }
 input[type=text], input[type=password], select { 
     height: 24px;
-    width: 382px;
+    width: 95%;
 }
 
 div.models { 
@@ -256,7 +310,17 @@ a.delete_model, a.delete_image {
     color:#A0A0A0;
     text-decoration: underline;
 }
-
+a.password_href { 
+    color:blue;
+    text-decoration:underline;
+}
+a.profile { 
+    font-style:normal;
+    text-decoration: underline;
+    color:#FFF;
+    font-size:24px;
+    margin-left:5px    
+}
 td.big > input {
     background-color: white;
     border-bottom-color: rgba(82, 168, 236, 0.746094);
@@ -305,13 +369,38 @@ td.big > input {
     text-indent: 0px;
     text-shadow: none;
     text-transform: none;
-    width: 382px;
+    width: 95%;
     word-spacing: 0px;
     z-index: auto;
 }
 p.downspace { 
+   margin-bottom:100px;    
+}
+div.main-page{ 
     margin-bottom:100px;
 }
+div.main-content{
+    padding-left:100px;
+}
+
+dl, dt {
+    margin: 0;
+    padding: 0 .5em 0 0;
+    float: left;
+/*      */
+    text-align: right;
+}
+
+dt.title { 
+    font-weight: bold;    
+}
+dl, dd {
+    margin: 0 0 0 11em;
+    padding: 0 0 7px 12px;
+    text-align: left;
+    font-style:normal; 
+}
+
 input.Login, input.Registration { 
     font-size: 20px;
     float: right;
@@ -347,6 +436,8 @@ ul.buttons {
     overflow:hidden;
     list-style:none;
 }
+
+
 
 ul.buttons > li {
     float:left;
@@ -448,7 +539,7 @@ textarea {
 
 .module {
     border: 1px solid #ccc;
-    margin-bottom: 5px;
+    margin: 5px;
     background: white;
 }
 
@@ -479,6 +570,9 @@ textarea {
     color: white;
 }
 
+h3 { 
+    word-wrap:normal
+}
 .module table {
     border-collapse: collapse;
 }

@@ -4,6 +4,19 @@ import datetime
 
 nowdate = datetime.datetime.now()
 
+PAYMENT_IN, PAYMENT_OUT = 1, 2
+PAYMENT_DIRECTION = [
+    (PAYMENT_IN, 'Поступление'),
+    (PAYMENT_OUT, 'Платеж'),
+] 
+
+APUBLISHED, ADRAFT, AREMOVED, AARCHIVE = 1, 2, 3, 4
+ARTICLE_STATUS = [ 
+    (APUBLISHED, 'Опубликована' ),
+    (ADRAFT, 'Черновик' ),
+    (AREMOVED, 'Удалена' ),
+    (AARCHIVE, 'Архивная' ),
+]
 PERSENT_VALUE = [ (x, str(x)) for x in range(5, 101, 5) ]
 FOUNDATION_YEAR = [ (x, str(x)) for x in range( nowdate.year, 1850, -1) ]
 
@@ -115,13 +128,15 @@ GLASS = (
   ( GLASS_ALL, u'все'),
 )
 
-CS_BASE, CS_PAYED, CS_UNPAID, CS_UNPAID_HIDE, CS_REMOVED = [1,2,3,4,5]
+CS_BASE, CS_PAYED, CS_UNPAID, CS_UNPAID_HIDE, CS_REMOVED, CS_FREE = [1,2,3,4,5,6]
+
 CONTRAGENT_STATUS = (
   (CS_BASE, u'Базовый'),
   (CS_PAYED, u'Оплаченный'),
   (CS_UNPAID, u'Неоплаченный'),
   (CS_UNPAID_HIDE, u'Неоплаченный скрытый'),
   (CS_REMOVED, u'Удаленный'),
+  (CS_FREE, u'Бесплатный'),
 )
 
 CONTACT_ACTIVE, CONTACT_BLOCKED, CONTACT_HIDE, CONTACT_REMOVED = [ 1, 2, 3, 4 ]
@@ -193,9 +208,17 @@ CONDITION = (
 
 RUB, DOLLAR, EURO = [ 1, 2, 3 ]
 CURRENCY = (
-  ( RUB, u'руб' ),
-  ( DOLLAR, u'$' ),
-  ( EURO, u'€' ),
+  ( RUB, u'RUR' ),
+  ( DOLLAR, u'$USD' ),
+  ( EURO, u'€EURO' ),
 )
+
+INVOICE_CREATED, INVOICE_PAYED, INVOICE_CANCELED, INVOICE_REMOVED = 1, 2, 3, 4
+INVOICE_STATUS = [ 
+    (INVOICE_CREATED, 'Выписан' ),
+    (INVOICE_PAYED, 'Оплачен' ),
+    (INVOICE_CANCELED, 'Отменен' ),
+    (INVOICE_REMOVED, 'Удален' ),
+]
 
 

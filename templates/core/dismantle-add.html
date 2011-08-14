@@ -118,6 +118,7 @@ $(document).ready(function() {
     {% if form.logo.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.logo.errors }}</p></td></tr> {% endif %}
     <tr>
         <td>{{ form.logo.label_tag }}</td>
+        <!--<td>{{ form.logo }} {%if locale_names.contragent_logo %} <a target="_blank" href="{{locale_names.contragent_logo}}">сейчас</a>{% endif %}</td>-->
         <td>{{ form.logo }} {%if locale_names.contragent_logo %} <a target="_blank" href="{{locale_names.contragent_logo}}">сейчас</a>{% endif %}</td>
     </tr>
 
@@ -169,6 +170,12 @@ $(document).ready(function() {
         <td>{{ form.new_parts }}</td>
     </tr>
 
+    {% if form.contract_motor.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.contract_motor.errors }}</p></td></tr> {% endif %}
+    <tr>
+        <td>{{ form.contract_motor.label_tag }}</td>
+        <td>{{ form.contract_motor }}</td>
+    </tr>
+    
     {% if form.send_regions.errors %} <tr><td></td><td><p class="ErrorMessage">{{ form.send_regions.errors }}</p></td></tr> {% endif %}
     <tr>
         <td>{{ form.send_regions.label_tag }}</td>
