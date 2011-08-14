@@ -1,0 +1,197 @@
+{% extends "core/base.html" %}
+{% block head_title %}Разборка автомобилей {{d.title}}{% endblock %}
+
+ {% block yandex_maps %}
+    <script src="http://api-maps.yandex.ru/1.1/index.xml?key=AGM9JU4BAAAApnERaQIA5uUwIjR0IRLVHltbc8K-PSpaLyoAAAAAAAAAAACokFuosvhvF6pJ8ceyJqc8ec75Gw==" type="text/javascript"></script>
+    <script type="text/javascript">
+    function initialize_yandex() {
+        var ymap = new YMaps.Map(document.getElementById("YMapsID"));
+        ymap.setCenter(new YMaps.GeoPoint({{d.dot_longitude}}, {{d.dot_latitude}} ), 13);
+        var placemark = new YMaps.Placemark( new YMaps.GeoPoint( {{d.dot_longitude}}, {{d.dot_latitude}} ), { style: "default#storehouseIcon", hideIcon: false } );
+        placemark.description = '{{d.baloon_small}}';
+        ymap.addOverlay(placemark);
+    }
+    </script>
+ {% endblock %}
+
+{% block body_outer %}
+<div class="main-page">
+    <div class="main-content">
+        <div class="about">
+<!--             <img src="{% if dismantle.logo %}{{dismantle.logo.picture.url}}{% endif %}" /> -->
+            <div class="basefields" style="border:gray 4px solid; border-style: ridge; margin-bottom:300px;width:70%" >
+                <fieldset class="module">
+            <!--     <legend></legend> -->
+                   <div class="left-field" style="margin:5px;">
+                    <table class="fat">
+                        <tr>
+                            <td style="font-width:bold;">{{ dismantle.title.label_tag }}</td>
+                            <td> <h1>{{ d.title }}</h1><div>{% for item in manufactures %}<img style="width:36px; height:36px;" src="{{ MEDIA_URL }}images/manufactures/mini/{{item}}.png"/><span style="margin-left:10px;"></span>{% endfor %}</div></td>
+                        </tr>
+
+                        <tr>
+                            <td><label for="id_models">Автомобили разборки</label></td>
+                            <td>
+                                <ul>
+                                {% for item in dismantle_models %} 
+                                    <li>{{item.manufacture}}-{{item.model}} ({{item.from_year}}-{{item.to_year}})</li>
+                                {% endfor %}
+                                <ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>{{ dismantle.foundation_year.label_tag }}</td>
+                            <td>{{ d.foundation_year }}</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>{{ dismantle.state.label_tag }}</td>
+                            <td>{{ d.state }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>{{ dismantle.region.label_tag }}</td>
+                            <td>{{ d.region }}</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>{{ dismantle.city.label_tag }}</td>
+                            <td>{{ d.city }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>{{ dismantle.address.label_tag }}</td>
+                            <td>{{ d.address }}</td>
+                        </tr>
+                        
+                        <tr>
+                            <td><label for="id_location">На карте</label></td>
+                            <td><div id="YMapsID" style="width:100%;height:300px;float:left;margin:5px;"></div></td>
+                        </tr>
+                        
+                        {% if dismantle.schedule %}
+                        <tr>
+                            <td>{{ dismantle.schedule.label_tag }}</td>
+                            <td>{{ d.schedule }}</td>
+                        </tr>
+                        {% endif %}
+
+                        <tr>
+                            <td>{{ dismantle.phone.label_tag }}</td>
+                            <td>{{ d.phone }}</td>
+                        </tr>
+                        
+                        {% if d.fax %}
+                        <tr>
+                            <td>{{ dismantle.fax.label_tag }}</td>
+                            <td>{{ d.fax }}</td>
+                        </tr>
+                        {% endif %}
+
+                        {% if d.email %}
+                        <tr>
+                            <td>{{ dismantle.email.label_tag }}</td>
+                            <td>{{ d.email }}</td>
+                        </tr>
+                        {% endif %}
+                        
+                        {% if d.url %}
+                        <tr>
+                            <td>{{ dismantle.url.label_tag }}</td>
+                            <td>{{ d.url }}</td>
+                        </tr>
+                        {% endif %}
+                        
+                        {%if d.skype %}
+                        <tr>
+                            <td>{{ dismantle.skype.label_tag }}</td>
+                            <td>{{ d.skype }}</td>
+                        </tr>
+                        {% endif %}
+                        
+                        {% if d.jabber %}
+                        <tr>
+                            <td>{{ dismantle.jabber.label_tag }}</td>
+                            <td>{{ d.jabber }}</td>
+                        </tr>
+                        {% endif %}
+                        
+                        {% if d.icq %}
+                        <tr>
+                            <td>{{ dismantle.icq.label_tag }}</td>
+                            <td>{{ d.icq }}</td>
+                        </tr>
+                        {% endif %}
+                        
+                        {% if d.car_service %}
+                        <tr>
+                            <td>{{ dismantle.car_service.label_tag }}</td>
+                            <td>{{ dismantle.car_service }}</td>
+                        </tr>
+                        {% endif %}
+                        
+                        {% if d.purchase_vehicles %}
+                        <tr>
+                            <td>{{ dismantle.purchase_vehicles.label_tag }}</td>
+                            <td>{{ dismantle.purchase_vehicles }}</td>
+                        </tr>
+                        {% endif %}
+                        
+                        {% if d.new_parts %}
+                        <tr>
+                            <td>{{ dismantle.new_parts.label_tag }}</td>
+                            <td>{{ dismantle.new_parts }}</td>
+                        </tr>
+                        {% endif %}
+                        
+                        {% if d.contract_motor %}
+                        <tr>
+                            <td>{{ dismantle.contract_motor.label_tag }}</td>
+                            <td>{{ dismantle.contract_motor }}</td>
+                        </tr>
+                        {% endif %}
+                        
+                        {% if d.send_regions %}
+                        <tr>
+                            <td>{{ dismantle.send_regions.label_tag }}</td>
+                            <td>{{ dismantle.send_regions }}</td>
+                        </tr>
+                        {% endif %}
+                        
+                        {% if d.local_delivery %}
+                        <tr>
+                            <td>{{ dismantle.local_delivery.label_tag }}</td>
+                            <td>{{ dismantle.local_delivery }}</td>
+                        </tr>
+                        {% endif %}
+                        
+                        {% if d.remark %} 
+                        <tr>
+                            <td>{{ dismantle.remark.label_tag }}</td>
+                            <td>{{ d.remark }}</td>
+                        </tr>
+                        {% else %}
+                            {% if d.short_remark %}
+                        <tr>
+                            <td>{{ dismantle.short_remark.label_tag }}</td>
+                            <td>{{ d.short_remark }}</td>
+                        </tr>
+                            {% endif %}            
+                        {% endif %}
+
+                        </table>          
+                    </div> <!--left-field-->
+                </fieldset>
+                <div class="pictures" style=" border: 1px solid #ccc;margin: 5px;background: white">
+                    {% for picture in contragent_pictures %}
+<!--                     onClick="return popup(this, '{{picture.title}}')" -->
+                    <a class="thumbnail" href="#thumb" ><img src="{{picture.picture.url}}" width="150px" border="0" /><span><img src="{{picture.picture.url}}" /><br /><b>{{picture.title}}</b>  {{picture.description}}</span></a>
+                    {% endfor %}
+                </div>
+            </div> <!--basefields-->
+        </div> <!--about-->        
+    </div> <!--main-content-->
+
+</div>
+{% endblock %}
+{% block body_initialize %}initialize_yandex();{% endblock %}
