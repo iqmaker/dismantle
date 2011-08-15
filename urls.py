@@ -18,6 +18,7 @@ urlpatterns = patterns('',
     (r'^dismantle-add/$', 'dismantle.core.views.dismantle_editor' ),
     (r'^dismantle-edit/(?P<dismantle_id>\d{1,6})$', 'dismantle.core.views.dismantle_editor' ),
     (r'^dismantle-view/(?P<dismantle_id>\d{1,6})$', 'dismantle.core.views.dismantle_view' ),
+    (r'^dismantle-remove/(?P<dismantle_id>\d{1,6})$', 'dismantle.core.views.dismantle_remove' ),
 )
 
 if settings.DEBUG:

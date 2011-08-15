@@ -25,7 +25,7 @@ body {
     left: -1000px;
     border: 1px dashed gray;
     visibility: hidden;
-    color: black;
+    color: #888;
     text-decoration: none;
 }
 
@@ -36,8 +36,9 @@ body {
 
 .thumbnail:hover span { /*CSS for enlarged image on hover*/
     visibility: visible;
-    top: 0;
-    left: 60px; /*position where enlarged image should offset horizontally */
+    top: -400px;
+    left: 180px; /*position where enlarged image should offset horizontally */
+    margin-bottom:100px;
 }
 
 

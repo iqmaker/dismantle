@@ -26,7 +26,7 @@
                     <table class="fat">
                         <tr>
                             <td style="font-width:bold;">{{ dismantle.title.label_tag }}</td>
-                            <td> <h1>{{ d.title }}</h1><div>{% for item in manufactures %}<img style="width:36px; height:36px;" src="{{ MEDIA_URL }}images/manufactures/mini/{{item}}.png"/><span style="margin-left:10px;"></span>{% endfor %}</div></td>
+                            <td> <h1>{{ d.title }}</h1><div>{% for item in manufactures %}<img style="width:56px; height:56px;" src="{{ MEDIA_URL }}images/manufactures/mini/{{item}}.png"/><span style="margin-left:10px;"></span>{% endfor %}</div></td>
                         </tr>
 
                         <tr>
@@ -185,7 +185,7 @@
                 <div class="pictures" style=" border: 1px solid #ccc;margin: 5px;background: white">
                     {% for picture in contragent_pictures %}
 <!--                     onClick="return popup(this, '{{picture.title}}')" -->
-                    <a class="thumbnail" href="#thumb" ><img src="{{picture.picture.url}}" width="150px" border="0" /><span><img src="{{picture.picture.url}}" /><br /><b>{{picture.title}}</b>  {{picture.description}}</span></a>
+                    <a class="thumbnail" href="#thumb" ><img src="{{picture.picture.url}}" width="150px" border="0" /><span><img width="600px" src="{{picture.picture.url}}" /><br /><b>{{picture.title}}</b>  {{picture.description}}</span></a>
                     {% endfor %}
                 </div>
             </div> <!--basefields-->

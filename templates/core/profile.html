@@ -66,10 +66,16 @@
     </div>
     <div class="user_dismantles">
         <table class="user_dismantles" style="width:100%;">
-            <tr><td colspan="3"><h3>Авторазборки пользователя:</h3></td></tr>
-                <tr><th>Разборка</th><th>Адрес</th><th>Последнее изменение</th></tr>
+            <tr><td colspan="5"><h3>Авторазборки пользователя:</h3></td></tr>
+                <tr><th>Разборка</th><th>Адрес</th><th>Последнее изменение</th><th>Удалить</th><th>Коррекция</th></tr>
                 {% for dismantle in dismantles %}
-                    <tr><td><a href="/dismantle-view/{{dismantle.id}}">{{dismantle.title}}</a></td><td>{{dismantle.address}}</td><td>{{dismantle.last_editing}}</td></tr>
+                    <tr>
+                        <td><a href="/dismantle-view/{{dismantle.id}}">{{dismantle.title}}</a></td>
+                        <td>{{dismantle.address}}</td>
+                        <td>{{dismantle.last_editing}}</td>
+                        <td><a href="/dismantle-remove/{{dismantle.id}}"><img style="width:36px;" src="{{MEDIA_URL}}/images/delete_48.png"/></a></td>
+                        <td><a href="/dismantle-edit/{{dismantle.id}}"><img style="width:36px;" src="{{MEDIA_URL}}/images/edit_48.png"/></a></td>
+                    </tr>
                 {% endfor %}
         </table>
     </div>

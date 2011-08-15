@@ -72,7 +72,7 @@ tbody td a {
 /* 	display: block; */
 	width: 10px;
 	height: 10px;
-	text-indent: -999em;
+/* 	text-indent: -999em; */
 	border-bottom: 0
 }
 tbody a:visited:after {

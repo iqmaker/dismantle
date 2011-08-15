@@ -111,18 +111,24 @@
             <table style="width:100%;">
                 <tbody>
                     <tr class="odd">
-                        <td><div class="title">{{item.title}}</div></td>
+                        <td><a href="/dismantle-view/{{item.id}}" target="_blank"><div class="title">{{item.title}}</div></a></td>
                     </tr>
                     <tr>
                         <td>
-                            <div class="address">{{item.address}}</div>
-                            <div class="phone">{{item.phone}}</div>
-                            {% if item.short_remark %}
-                                <div class="short_remark">{{item.short_remark}}</div>
-                            {% endif %}
+                        {% for m in item.get_manufactures %}
+                            <img style="width:36px; height:36px;" src="{{ MEDIA_URL }}images/manufactures/mini/{{m}}.png"/><span style="margin-left:10px;"></span>
+                        {% endfor %}
                         </td>
                     </tr>
-                    <tr><td class="split"></td></tr>
+                    <tr>
+                        <td> 
+                            <div class="address" style="margin-bottom:5px;font-weight:bold;"><b style="color:#999;margin-right:10px;">адрес:</b>{{item.address}}</div>
+                            <div class="phone" style="margin-bottom:5px;font-weight:bold;"><b style="color:#999;margin-right:10px;">тел:</b>{{item.phone}}</div>
+                            <div class="short_remark">{{item.short_remark}}</div>
+                            <div style="margin-top:10px;"><span style="align:right;"><a href="/dismantle-view/{{item.id}}" style="color:#000080;text-decoration:underline;">подробнее</a></span></div>
+                        </td>
+                    </tr>
+                    <tr><td class="split" style="background-color:#BBB;"></td></tr>
                     {% endfor %}
                 <tbody>
                 <tfoot><tr>
@@ -141,8 +147,8 @@
 
 
 
-    {#<h1>Логотипы автокомпаний</h1>{% for item in manufacture %}<b>{{item.title}}</b><img src="{{ MEDIA_URL }}images/manufactures/small/{{item.file_name}}.png"/>{% endfor %}#}
-
+<!--     <h1>Логотипы автокомпаний</h1>{% for item in manufacture %}<b>{{item.title}}</b><img src="{{ MEDIA_URL }}images/manufactures/small/{{item.file_name}}.png"/>{% endfor %} -->
+    <p class="downspace"></p>
 
 {% endblock %}
 

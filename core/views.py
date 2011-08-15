@@ -439,7 +439,7 @@ def profile( request ):
       
     u = User.objects.get( id = request.user.pk )
     p = Person.objects.get( user = u )
-    dismantles = Dismantle.objects.filter( owner=request.user )
+    dismantles = Dismantle.objects.filter( owner=request.user ).exclude( status=enums.CS_REMOVED )
     if request.method == 'POST':
         form = UserProfileForm( request.POST, request=request )
         if form.is_valid():
@@ -499,7 +499,26 @@ def remove_contragent_picture( contragent_id, notremove=[] ):
             DBOUT( "REMOVED:" + str(i.pk) )
             i.delete()
         
+
+def dismantle_remove( request, dismantle_id ):
+    if not request.user.is_authenticated():
+        raise Http404
     
+    u = User.objects.get( id = request.user.pk )
+    try:
+        d = Dismantle.objects.get( id=dismantle_id )
+    except:
+        raise Http404
+    
+    d.last_editing = datetime.datetime.now()
+    if d.owner_id != u.id and not u.is_superuser:
+        raise Http404
+    d.status = enums.CS_REMOVED
+    d.save()
+    
+    return HttpResponseRedirect( "/profile" )
+    
+        
 def dismantle_editor( request, dismantle_id=-1 ):
     if not request.user.is_authenticated():
         return HttpResponseRedirect( "/login" )
@@ -649,7 +668,8 @@ def dismantle_editor( request, dismantle_id=-1 ):
             remove_contragent_picture( dismantle_id, notremove=not_removed_images )
         else:
             print "NOT VALID MAIN FORM", form.errors 
-                                            
+        
+        return HttpResponseRedirect( "/dismantle-view/%s" % dismantle_id  )
             
     else:
         if dismantle_id == -1: #dismantle-add

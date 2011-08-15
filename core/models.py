@@ -59,11 +59,16 @@ class Manufacture( models.Model ):
     title = models.CharField( max_length=64, verbose_name=u'Название' )
     ru_title = models.CharField( max_length=64, verbose_name=u'Русскоязычное название', blank=True, null=True )
     logo = models.CharField( verbose_name=u'Логотип', max_length=200, blank=True, null=True )
+    
     def __unicode__(self):
-      return self.title
+        return self.title
       
     class Meta:
-      verbose_name = u"Марка"
+        verbose_name = u"Марка"
+    
+    def file_name( self ):
+        fname = '_'.join( self.title.replace('-',' ').lower().split() )
+        return fname
 
 class Model( models.Model ):
     manufacture = models.ForeignKey( Manufacture, verbose_name=u'Марка' )
@@ -313,15 +318,19 @@ class Dismantle( Contragent ):
     class Meta:
       verbose_name = u'Авторазборка'
     
+    def get_manufactures( self ):
+        try:
+            return self.manufactures
+        except:
+            self.manufactures = set()
+            dismantle_models = DismantleModel.objects.filter( dismantle=self )
+            for i in dismantle_models:
+                self.manufactures.add( i.manufacture.file_name() )
+        return self.manufactures
+            
     def baloon_small( self ):
         t = template.Template( get_baloon_template().strip() )
-        #DBOUT( get_baloon_template() )
-        dismantle_models = DismantleModel.objects.filter( dismantle=self )
-        manufactures = set()
-        for i in dismantle_models:
-            manufactures.add( i.manufacture.title.lower() )
-        
-        c = template.Context({'d':self, 'manufactures':manufactures, 'MEDIA_URL':settings.MEDIA_URL } )
+        c = template.Context({'d':self, 'manufactures':self.get_manufactures(), 'MEDIA_URL':settings.MEDIA_URL } )
         result = t.render(c)
         return result
 
