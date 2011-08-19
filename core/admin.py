@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*- 
 from django.contrib import admin
 from dismantle.core.models import Contragent, Car, Model, Manufacture, CarPicture, ContragentPicture, Picture, Dismantle, DismantleModel
 import os
