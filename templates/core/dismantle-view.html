@@ -26,7 +26,7 @@
                     <table class="fat">
                         <tr>
                             <td style="font-width:bold;">{{ dismantle.title.label_tag }}</td>
-                            <td> <h1>{{ d.title }}</h1><div>{% for item in manufactures %}<img style="width:56px; height:56px;" src="{{ MEDIA_URL }}images/manufactures/mini/{{item}}.png"/><span style="margin-left:10px;"></span>{% endfor %}</div></td>
+                            <td> <h1>{{ d.title }}</h1><div>{% for item in manufactures %}<img style="height:56px;" src="{{item}}"/><span style="margin-left:10px;"></span>{% endfor %}</div></td>
                         </tr>
 
                         <tr>
@@ -188,6 +188,11 @@
                     <a class="thumbnail" href="#thumb" ><img src="{{picture.picture.url}}" width="150px" border="0" /><span><img width="600px" src="{{picture.picture.url}}" /><br /><b>{{picture.title}}</b>  {{picture.description}}</span></a>
                     {% endfor %}
                 </div>
+                {% if edit_user %}
+                <div style="float:right;" >
+                    <button onclick="window.location.href='/dismantle-edit/{{d.id}}'" >Редактировать</button>
+                </div>
+                {% endif %}
             </div> <!--basefields-->
         </div> <!--about-->        
     </div> <!--main-content-->

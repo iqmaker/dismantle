@@ -8,6 +8,7 @@ from django import template
 from enums import *
 from django.contrib.auth.models import User
 import inspect
+import re
 
 def DBOUT( obj ):
     """Returns the current line number in our program."""
@@ -58,7 +59,6 @@ class Person( models.Model ):
 class Manufacture( models.Model ):
     title = models.CharField( max_length=64, verbose_name=u'Название' )
     ru_title = models.CharField( max_length=64, verbose_name=u'Русскоязычное название', blank=True, null=True )
-    logo = models.CharField( verbose_name=u'Логотип', max_length=200, blank=True, null=True )
     
     def __unicode__(self):
         return self.title
@@ -67,13 +67,60 @@ class Manufacture( models.Model ):
         verbose_name = u"Марка"
     
     def file_name( self ):
-        fname = '_'.join( self.title.replace('-',' ').lower().split() )
+        fname = re.sub( '\.|\-|\(|\)', ' ', self.title ).strip().lower().split()
+        fname = '_'.join( fname )
         return fname
+        
+    def url_name( self ):
+        return self.file_name().replace( '_', '-' )
+        
+    def logo_location( self, size ):
+        location = os.path.join( settings.MEDIA_ROOT, 'images/manufactures' )
+        location = os.path.join( location, size )
+        location = os.path.join( location, self.file_name() + '.png' )
+        return location
+        
+    def logo_url( self, size ):
+        location = os.path.join( settings.MEDIA_URL, 'images/manufactures' )
+        location = os.path.join( location, size )
+        location = os.path.join( location, self.file_name() + '.png' ) 
+        return location
+      
+    def logo_url_mini( self ):
+        return self.logo_url( 'mini' )
+        
+    def logo_url_small( self ):
+        return self.logo_url( 'small' )
+        
+    def logo_root_mini( self ):
+        return self.logo_location( 'mini')
+        
+    def render_picture( self, filename ):
+        picture_path = os.path.join(settings.MEDIA_URL, filename )
+        picture_path = picture_path.replace('\\','/') # Windows-Fix
+        result = '<img src="%s"/></a>' % picture_path
+        return result
+      
+    def get_thumbnail(self):
+        return self.render_picture( self.logo_url_mini() )
+    
+    get_thumbnail.short_description = 'Логотип'
+    get_thumbnail.allow_tags = True
+        
 
 class Model( models.Model ):
     manufacture = models.ForeignKey( Manufacture, verbose_name=u'Марка' )
     title = models.CharField( max_length=64, verbose_name=u'Название' )
     ru_title = models.CharField( max_length=64, verbose_name=u'Русскоязычное название', blank=True, null=True  )
+    
+    def file_name( self ):
+        fname = re.sub( '\.|\-|\(|\)', ' ', self.title ).strip().lower().split()
+        fname = '_'.join( fname )
+        return fname
+        
+    def url_name( self ):
+        return self.file_name().replace( '_', '-' )
+        
     def __unicode__(self):
       return self.title
       
@@ -92,7 +139,16 @@ class State( models.Model ):
 class Region( models.Model ):
     title = models.CharField( max_length=32, verbose_name=u'Название' )
     state = models.ForeignKey( State, verbose_name=u'Страна' )
+    ru_title = models.CharField( max_length=64, verbose_name=u'Русскоязычное название' )
     
+    def file_name( self ):
+        fname = re.sub( '\.|\-|\(|\)', ' ', self.title ).strip().lower().split()
+        fname = '_'.join( fname )
+        return fname
+
+    def url_name( self ):
+        return self.file_name().replace( '_', '-' )
+        
     def __unicode__(self):
       return self.title
       
@@ -101,6 +157,7 @@ class Region( models.Model ):
 
 class City( models.Model ):
     title = models.CharField( max_length=32, verbose_name=u'Название' )
+    ru_title = models.CharField( max_length=64, verbose_name=u'Русскоязычное название' )
     region = models.ForeignKey( Region, verbose_name=u'Регион' )
     state = models.ForeignKey( State, verbose_name=u'Страна' )
     regional_center = models.BooleanField(  verbose_name=u'Региональный центр' )
@@ -115,7 +172,15 @@ class City( models.Model ):
         
     def __unicode__(self):
       return self.title
-      
+
+    def file_name( self ):
+        fname = re.sub( '\.|\-|\(|\)', ' ', self.title ).strip().lower().split()
+        fname = '_'.join( fname )
+        return fname
+
+    def url_name( self ):
+        return self.file_name().replace( '_', '-' )
+        
     class Meta:
       verbose_name = u"Город"
 
@@ -325,7 +390,7 @@ class Dismantle( Contragent ):
             self.manufactures = set()
             dismantle_models = DismantleModel.objects.filter( dismantle=self )
             for i in dismantle_models:
-                self.manufactures.add( i.manufacture.file_name() )
+                self.manufactures.add( i.manufacture.logo_url_mini() )
         return self.manufactures
             
     def baloon_small( self ):
@@ -364,6 +429,7 @@ class Article( models.Model ):
     last_editing = models.DateField( verbose_name=u'Дата последней коррекции', blank=True, null=True, auto_now_add=True )
     body = models.TextField( verbose_name=u'Страница в формате html', blank=True, null=True )
     owner =  models.ForeignKey( User, verbose_name=u'Автор' )
+    dismantle = models.ForeignKey( Dismantle, verbose_name=u'Разборка' )
 
 class Payment( models.Model ):
     title = models.CharField( max_length=150, verbose_name=u'Название')

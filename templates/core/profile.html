@@ -73,7 +73,7 @@
                         <td><a href="/dismantle-view/{{dismantle.id}}">{{dismantle.title}}</a></td>
                         <td>{{dismantle.address}}</td>
                         <td>{{dismantle.last_editing}}</td>
-                        <td><a href="/dismantle-remove/{{dismantle.id}}"><img style="width:36px;" src="{{MEDIA_URL}}/images/delete_48.png"/></a></td>
+                        <td><a onclick="return confirm('Разборка будет удалена, продолжить?');" href="/dismantle-remove/{{dismantle.id}}"><img style="width:36px;" src="{{MEDIA_URL}}/images/delete_48.png"/></a></td>
                         <td><a href="/dismantle-edit/{{dismantle.id}}"><img style="width:36px;" src="{{MEDIA_URL}}/images/edit_48.png"/></a></td>
                     </tr>
                 {% endfor %}

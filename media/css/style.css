@@ -34,6 +34,46 @@ body {
     padding: 2px;
 }
 
+h2:first-letter {
+  text-transform: uppercase;
+  color:red;
+}
+
+ul.head_links { 
+    margin-left:0px;
+    padding-left:0px;
+    margin-bottom:0px;
+/*     width:15%; */
+    float:left;
+    margin-top:0px;
+    padding-left:0px;
+}
+
+p.main_letter{ 
+ margin-bottom: 0px;   
+ margin:0;
+ padding:0;
+ margin-top:4px;
+}
+p.siple_letter { 
+ margin-bottom: 0px;   
+ margin:0;
+ padding:0;  
+}
+p.main_letter:first-letter { 
+    font-size:24px;
+    margin-left:0px;
+    font-weight:bold;
+    color:#630101;
+}
+
+p.siple_letter:first-letter { 
+    margin-left:0px;
+    font-weight:bold;
+    color:#697A57;
+    font-size:1.1em;
+}
+
 .thumbnail:hover span { /*CSS for enlarged image on hover*/
     visibility: visible;
     top: -400px;
@@ -315,6 +355,15 @@ a.password_href {
     color:blue;
     text-decoration:underline;
 }
+a.tree_urls { 
+    font-size:0.8em;
+    color:#555555;
+    margin-left:4px;
+}
+a.header_urls { 
+    font-size:0.9em;
+    color:#555555;
+}
 a.profile { 
     font-style:normal;
     text-decoration: underline;
@@ -560,6 +609,7 @@ textarea {
 .module h3 {
     margin-top: .6em;
 }
+
 
 .module h2, .module caption, .inline-group h2 {
     margin: 0;

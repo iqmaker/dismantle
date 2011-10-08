@@ -36,6 +36,8 @@ import inspect
 from django.db.models import Q
 from django.core import serializers
 
+class Object:pass
+
 user_agents = [
     'Mozilla/5.0 (Windows; U; Windows NT 5.1; it; rv:1.8.1.11) Gecko/20071127 Firefox/2.0.0.11',
     'Opera/9.25 (Windows NT 5.1; U; en)',
@@ -61,9 +63,10 @@ headers = {
 'Content-Type' : 'text/html; charset=windows-1251',
 }
 
+
 def DBOUT( obj ):
     """Returns the current line number in our program."""
-    print ">>>>>>>>>>>>>>>>>>: " + str(obj) + ' LINE:' + str(inspect.currentframe().f_back.f_lineno)
+    print ( ">>>>>>>>>>>>>>>>>>: ", obj, ' LINE:', str(inspect.currentframe().f_back.f_lineno) )
     
 def handle_uploaded_file(f, t):
     destination = open(t, 'wb+')
@@ -94,9 +97,55 @@ def set_cookie( response, key, value, days_expire = 60 ):
     expires = datetime.datetime.strftime(datetime.datetime.utcnow() + datetime.timedelta(seconds=max_age), "%a, %d-%b-%Y %H:%M:%S GMT")
     response.set_cookie(key, value, max_age=max_age, expires=expires, domain=settings.SESSION_COOKIE_DOMAIN, secure=settings.SESSION_COOKIE_SECURE or None)
     return response
+
+def get_region( request ):
+    regionid = 4 #Moscow
+    if 'regionid' in request.COOKIES:
+        regionid = request.COOKIES[ 'regionid' ]
+        
+    if request.method == 'POST': 
+       if 'regionid' in request.POST:
+           regiondid = requst.POST[ 'regionid' ]
+    else:
+        if 'regionid' in request.GET:
+            regionid = request.GET[ 'regionid' ]
+            
+    return regionid
     
 class MyOpener(FancyURLopener, object):
     version = choice(user_agents)
+
+class LinkManager:
+    links=[ ('/', 'главная') ]
+    currentlink = tuple()
+    
+    def update(self):
+        if self.currentlink in self.links:
+            self.links = self.links[:self.links.index( self.currentlink ) + 1]
+        else:
+            self.links.append( self.currentlink )
+
+    def __init__( self, links=[ ('/', 'главная') ], currentlink=( '/', 'главная' ) ):
+        self.links = links
+        self.currentlink = currentlink
+        self.update()
+
+    def add_link( self, link ):
+        self.currentlink = link
+        self.update()
+
+    def get_currentlink( self ):
+        return self.currentlink
+
+    def get_links( self ):
+        return self.links
+
+    def get_render_links( self ):
+        result = ''
+        for link in self.links:
+            result += '<a href="' + link[0] + '">/' + link[1] + '</a>'
+        return result
+
 
 def get_coordinates_google( address ):
     myopener = MyOpener()
@@ -141,7 +190,7 @@ def update_city_coordinates():
         oState = State.objects.get( id=city.state_id )
         if (not city.latitude or not city.longitude) or (city.latitude==0.0 or city.longitude==0.0):
             time.sleep( 0.5 )
-            address = oState.title.lower() + ', ' + oRegion.title.lower() + u', ' + city.title.lower()
+            address = oState.title.lower() + ', ' + oRegion.ru_title.lower() + u', ' + city.title.lower()
             coord = get_coordinates_yandex( address )
             #print( address.encode( "utf-8" ), coord  )
             city.latitude, city.longitude = coord
@@ -161,9 +210,11 @@ def update_contragent_coordinates():
 def blogs(request):
     regionid = get_region( request )
     oRegion = Region.objects.get( id=regionid )
+    meta = {'title':'не задано','keywords':'не задано','description':'не задано'}
     return render_to_response( 'core/blogs.html', 
-                                {'region_name':oRegion.title,
-                                 'region_label':u'Регион:',
+                                {'region_name':oRegion.ru_title,
+                                 'region_label':u'регион:',
+                                 'meta':meta,
                                 }, context_instance=RequestContext(request)  )
 
 def mansearch(request):
@@ -209,43 +260,45 @@ def city_by_region(request):
 def about(request):
     regionid = get_region( request )
     oRegion = Region.objects.get( id=regionid )
+    meta = {'title':'не задано','keywords':'не задано','description':'не задано'}
     return render_to_response( 'core/about.html', 
-                            {'region_name':oRegion.title,
-                            'region_label':u'Регион:',
+                            {'region_name':oRegion.ru_title,
+                            'region_label':u'регион:',
+                            'meta':meta,
                             }, context_instance=RequestContext(request)  )
     
 def feedback(request):
     regionid = get_region( request )
     oRegion = Region.objects.get( id=regionid )
+    meta = {'title':'не задано','keywords':'не задано','description':'не задано'}
     return render_to_response( 'core/feedback.html', 
-                            {'region_name':oRegion.title,
-                            'region_label':u'Регион:',
+                            {'region_name':oRegion.ru_title,
+                            'region_label':u'регион:',
+                            'meta':meta,
                             }, context_instance=RequestContext(request)  )
-  
-
-def get_region( request ):
-    regionid = 4 #Moscow
-    if 'regionid' in request.COOKIES:
-        regionid = request.COOKIES[ 'regionid' ]
-        
-    if request.method == 'POST': 
-       if 'regionid' in request.POST:
-           regiondid = requst.POST[ 'regionid' ]
-    else:
-        if 'regionid' in request.GET:
-            regionid = request.GET[ 'regionid' ]
-    return regionid
 
 def city_center_by_region( regionid ):
     city = City.objects.get( region = regionid, regional_center=1 )
     city.latitude = str(city.latitude)
     city.longitude = str(city.longitude)
+    city.zoom = 9
+    return city
+
+def city_center_by_city( cityid ):
+
+    city = City.objects.get( id = cityid )
+    city.latitude = str(city.latitude)
+    city.longitude = str(city.longitude)
+    
+    if city.regional_center:
+        city.zoom = 10
+    else:
+        city.zoom = 12
     return city
     
 def region(request):
-
     regionid = get_region( request )
-    AREGIONS = ','.join( [ str(x) for x in [ 1, ] ] )
+    AREGIONS = ','.join( [ str(x) for x in [ 1, ] ] ) #Only Russia
     states = State.objects.extra(where=['id IN ( %s )' % AREGIONS  ])
     regions = Region.objects.extra( where=['state_id IN ( %s )' % AREGIONS ] )
     
@@ -256,11 +309,13 @@ def region(request):
             j.nextline = 'yes'
      
     oRegion = Region.objects.get( id=regionid )
+    meta = {'title':'не задано','keywords':'не задано','description':'не задано'}
     resp = render_to_response (  'core/region.html', 
                                 { 'states':states, 
                                 'regions':regions, 
-                                'region_label':u'Регион:',
-                                'region_name':oRegion.title,
+                                'region_label':u'регион:',
+                                'region_name':oRegion.ru_title,
+                                'meta':meta,
                                 'MEDIA_URL':settings.MEDIA_URL }, 
                                 context_instance=RequestContext(request)  )
                                 
@@ -269,57 +324,176 @@ def region(request):
     return resp
 
 
-def alias_index( request, region_title, manufacture_title, model_title, page_num ):
-    print( region_title, manufacture_title, model_title, page_num )
-    return index( request, pageid=page_num )
+def alias_index( request, manufacture_title=None, model_title=None, region_title=None, city_title=None ):
+    manufacture_id = None
+    model_id = None
+    region_id = None
+    city_id = None
     
-def index( request, regionid=None, manufactureid=None, modelid=None, pageid=None ):
+    if manufacture_title:
+        manufactures = Manufacture.objects.all()
+        for m in manufactures:
+            if m.url_name() == manufacture_title:
+                manufacture_id = m.id
+                break
+        if manufacture_id and model_title:
+            models = Model.objects.filter( manufacture=manufacture_id )
+            DBOUT( len( models ) )
+            for m in models:
+                DBOUT( m.url_name() )
+                if m.url_name() == model_title:
+                    model_id = m.id
+                    break
+            if model_id and region_title:
+                regions = Region.objects.all()
+                for r in regions:
+                    if r.url_name() == region_title:
+                        region_id = r.id
+                        break
+            if region_id and city_title:
+                cities = City.objects.filter( region=region_id )
+                for c in cities:
+                    if c.url_name() == city_title:
+                        city_id = c.id
+                        break
+
+            
+    print( manufacture_title, model_title, region_title, city_title )
+    print (  manufacture_id, model_id, region_id, city_id )
+    
+    return index( request, manufacture_id, model_id, region_id, city_id )
+    
+def index( request, manufactureid=None, modelid=None, regionid=None, cityid=None ):
+    tree_urls = ( ( '/', 'Главная' ), )
+
+    user_regionid = None
+    user_regionid = get_region( request )
+    if user_regionid:
+        user_region = Region.objects.get( id=user_regionid )
+
+    if manufactureid:
+        mf = Manufacture.objects.get( id=manufactureid )
+        tree_urls += ( ( '/razborka/%s' % mf.url_name(), mf.ru_title ), )
+    if modelid:
+        md = Model.objects.get( id=modelid )
+        tree_urls += ( ( '/razborka/%s/%s' % (mf.url_name(), md.url_name() ) , md.title ), )
+    if regionid:
+        rg = Region.objects.get( id=regionid )
+        tree_urls  += ( ( '/razborka/%s/%s/region-%s' % ( mf.url_name(), md.url_name(), rg.url_name() ), rg.ru_title ), )
+    if cityid:
+        ct = City.objects.get( id=cityid )
+        tree_urls += ( ( '/razborka/%s/%s/region-%s/gorod-%s' % ( mf.url_name(), md.url_name(), rg.url_name(), ct.url_name() ), ct.ru_title ), )
+        
+    
+    head_links = []
+
+    print( manufactureid, modelid, regionid, cityid )
+    if manufactureid and modelid and regionid and cityid:
+        #Конечный пункт поэтому ничего не генерим
+        pass
+    elif manufactureid and modelid and regionid:
+        #Генерим города региона в которых есть разборки
+        cities = City.objects.filter( region=regionid )
+        for c in cities:
+            link = '/razborka/%s/%s/region-%s/gorod-%s' % ( mf.url_name(), md.url_name(), rg.url_name(), c.url_name() ) 
+            hl = { 'link':link, 'ru_title':c.ru_title }
+            head_links.append( hl )
+    elif manufactureid and modelid:
+        #Генерим регионы в которых есть данные разборки
+        regions = Region.objects.filter( state=1 ) #Only Russia
+        for r in regions:
+            link = '/razborka/%s/%s/region-%s' % ( mf.url_name(), md.url_name(), r.url_name() )
+            hl = { 'link':link, 'ru_title':r.ru_title }
+            head_links.append( hl )
+    elif manufactureid:
+        #Генерим модели в данной марки по которым есть разборки
+        models = Model.objects.filter( manufacture=manufactureid )
+        for m in models:
+            link = '/razborka/%s/%s' % ( mf.url_name(), m.url_name() )
+            hl = { 'link':link, 'ru_title':m.title }
+            head_links.append( hl )
+    else:
+        #Генерим марки автомобилей по которым есть разборки
+        manufactures = Manufacture.objects.order_by( 'title' )
+        last_symbol = ''
+        for m in manufactures:
+            link = '/razborka/%s' % m.url_name()
+            image_name = m.file_name() 
+            symbol = m.title[:1]
+            if last_symbol != symbol:
+                hl = { 'link':link, 'ru_title':m.title, 'image_name':image_name, 'symbol':symbol }
+                head_links.append( hl )
+                last_symbol = symbol
+            else:
+                hl = { 'link':link, 'ru_title':m.title, 'image_name':image_name }
+                head_links.append( hl )
+            
+            
+    if not regionid:
+        regionid = user_regionid
+        
     update_contragent_coordinates()
     #update_city_coordinates()
-    contragents = Dismantle.objects.order_by('title')
-    manufacture = Manufacture.objects.order_by('title')
-    for sub in manufacture:
-        sub.file_name = '_'.join( sub.title.replace('-',' ').lower().split() )
         
+    manufacture = Manufacture.objects.order_by('ru_title')
+    DBOUT( manufacture )
+    #for sub in manufacture:
+    #    sub.file_name = '_'.join( sub.title.replace('-',' ').lower().split() )
+
+    if request.method == 'POST':    
+        head_links = []
+        form = DismantleSearchForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            manufactureid = cd['manufacture']
+            modelid = cd['model']
+    else: 
+        data = { 'manufacture':manufactureid, 'model':modelid }
+        form = DismantleSearchForm(  data )
+     
+    if manufactureid is None and modelid is None:
+        contragents = ()
+    else:
+        contragents = Dismantle.objects.order_by('title')
+
     for sub in contragents:
         sub.latitude = str(sub.latitude)
         sub.longitude = str(sub.longitude)
         print sub.latitude, sub.longitude
-
-    if request.method == 'POST':        
-        form = DismantleSearchForm(request.POST)
-        if form.is_valid():
-            cd = form.cleaned_data
-    else: 
-        data = { 'manufacture':manufactureid, 'model':modelid }
-        form = DismantleSearchForm(  data )
-            
+        
     if not regionid:
-        regionid = get_region( request )
-
-    if regionid.isdigit(): 
-        if Region.objects.filter( id=regionid ).count() == 0:
-            regionid = 4 #default Moscow
+        regionid = 4 #Moscow
+    
+    if not cityid:
+        city_center = city_center_by_region( regionid )
     else:
-            regionid = 4
+        city_center = city_center_by_city( cityid )
     
-    oRegion = Region.objects.get( id=regionid )
-    city_center = city_center_by_region( regionid )
     
+    for i, hl in enumerate(head_links):
+        if (i)%(int( (len(head_links)+5)/5.0 ) ) == 0:
+            hl[ 'block' ] = True
+            
+    DBOUT( head_links )
+    meta = {'title':'не задано','keywords':'не задано','description':'не задано'}
     resp = render_to_response( 'core/index.html', 
                             { 'contragents':contragents,
                             'city_center':city_center,
                             'manufacture':manufacture, 
                             'MEDIA_URL':settings.MEDIA_URL,
                             'total':len(contragents),
-                            'region_label':u'Регион:',
-                            'region_name':oRegion.title,
+                            'region_label':u'регион:',
+                            'region_name':user_region.ru_title,
                             'DismantleSearchForm':form,
+                            'meta':meta,
+                            'tree_urls':tree_urls,
+                            'ismain': len(tree_urls)==1,
+                            'head_links':head_links,
                             }, 
                             context_instance=RequestContext(request) )
                             
-    set_cookie( resp, 'regionid', regionid ) #Moscow
     resp.content = strip_empty_lines( resp.content )
+    set_cookie( resp, 'regionid', user_regionid )
     return resp
 
 def mylogout(request):
@@ -364,9 +538,11 @@ def registration( request ):
     else:
         form = UserRegistrationForm()
         
+    meta = {'title':'не задано','keywords':'не задано','description':'не задано'}
     return render_to_response( 'core/registration.html',
                             {'form': form,
                              'next': 'core/profile.html',
+                             'meta':meta,
                             }, 
                             context_instance=RequestContext(request))
 
@@ -388,10 +564,12 @@ def changepassword( request ):
     else:
         form = ChangePasswordForm()
         
+    meta = {'title':'не задано','keywords':'не задано','description':'не задано'}
     return render_to_response( 'core/changepassword.html',
                             {'form': form,
                              'login':u.username,
                              'next': 'core/restorepassword.html',
+                             'meta':meta,
                             }, 
                             context_instance=RequestContext(request))  
         
@@ -422,9 +600,11 @@ def restorepassword( request ):
     else:
         form = RestorePasswordForm()
         
+    meta = {'title':'не задано','keywords':'не задано','description':'не задано'}
     return render_to_response( 'core/restorepassword.html',
                             {'form': form,
                              'next': 'core/restorepassword.html',
+                             'meta':meta,
                             }, 
                             context_instance=RequestContext(request))  
                             
@@ -436,7 +616,11 @@ def extract_phones( source ):
 def profile( request ):
     if not request.user.is_authenticated():
         return HttpResponseRedirect( "/login" )
-      
+   
+    user_regionid = get_region( request )
+    if user_regionid:
+        user_region = Region.objects.get( id=user_regionid )
+        
     u = User.objects.get( id = request.user.pk )
     p = Person.objects.get( user = u )
     dismantles = Dismantle.objects.filter( owner=request.user ).exclude( status=enums.CS_REMOVED )
@@ -474,13 +658,15 @@ def profile( request ):
                  }
         form = UserProfileForm( data )
         
-        
-        
+    meta = {'title':'не задано','keywords':'не задано','description':'не задано'}
     return render_to_response( 'core/profile.html',
                             {'form': form,
                              'next': 'core/profile.html',
                              'user':u,
-                             'dismantles':dismantles
+                             'dismantles':dismantles,
+                             'meta':meta,
+                             'region_label':u'регион:',
+                             'region_name':user_region.ru_title,
                             }, 
                             context_instance=RequestContext(request))    
 
@@ -523,7 +709,7 @@ def dismantle_editor( request, dismantle_id=-1 ):
     if not request.user.is_authenticated():
         return HttpResponseRedirect( "/login" )
         
-    u = User.objects.get( id = request.user.pk )
+    u = User.objects.get( id = request.user.pk  )
     
     DismantleModelFormSet = formset_factory(DismantleModelForm, max_num=50)
     ImageFormSet = formset_factory(ImageForm, max_num=20 )
@@ -760,13 +946,15 @@ def dismantle_editor( request, dismantle_id=-1 ):
     regionid = get_region( request )
     oRegion = Region.objects.get( id=regionid )
     
+    meta = {'title':'не задано','keywords':'не задано','description':'не задано'}
     return render_to_response( 'core/dismantle-add.html', 
-                            {'region_name':oRegion.title,
-                            'region_label':u'Регион:',
+                            {'region_name':oRegion.ru_title,
+                            'region_label':u'регион:',
                             'models_formset':models_formset,
                             'images_formset':images_formset,
                             'form':form,
                             'locale_names':locale_names,
+                            'meta':meta,
                             }, context_instance=RequestContext(request)  )
                             
 
@@ -782,7 +970,7 @@ def dismantle_view( request, dismantle_id ):
     
     manufactures = set()
     for i in dismantle_models:
-        manufactures.add( i.manufacture.title.lower() )
+        manufactures.add( i.manufacture.logo_url_mini() )
     
     main_form_data = { 'title':d.title,
                                 'logo':d.logo,
@@ -811,8 +999,24 @@ def dismantle_view( request, dismantle_id ):
                                 'dismantle_id': dismantle_id }
                                 
     form = DismantleAddForm( main_form_data )
-                                
-    return render_to_response( 
+    edit_user = False
+    if request.user.is_authenticated():
+        u = User.objects.get( id = request.user.pk  )                          
+        if d.owner_id == u.id or u.is_superuser:
+            edit_user = True
+    
+    print request
+    print( dir( request ) )
+    print( request.read() )
+    print( request.path )
+    
+    currentlink = ( request.path, d.title )
+    meta = {'title':'не задано','keywords':'не задано','description':'не задано'}
+    
+    regionid = get_region( request )
+    oRegion = Region.objects.get( id=regionid )
+    
+    resp = render_to_response( 
                             'core/dismantle-view.html', 
                             {'dismantle':form,
                              'd':d,
@@ -820,7 +1024,13 @@ def dismantle_view( request, dismantle_id ):
                             'contragent_pictures':contragent_pictures,
                             'locale_names':locale_names,
                             'manufactures':manufactures,
+                            'edit_user':edit_user,
+                            'meta':meta,
+                            'region_label':u'регион:',
+                            'region_name':oRegion.ru_title,
                             }, context_instance=RequestContext(request)  )
+    resp.content = strip_empty_lines( resp.content )
+    return resp
     
 #----------------------------------------
 def todolist(request):

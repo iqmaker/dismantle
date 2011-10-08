@@ -14,9 +14,9 @@
             <div style="width:20%;float:left;margin:15px;float:left;align:left;">
             {% endif %}
             {% if region.selected == 'yes' %}
-                <p><a style="color:red;" href="/?regionid={{region.id}}">{{region.title}}</a></p>
+                <p><a style="color:red;" href="/?regionid={{region.id}}">{{region.ru_title}}</a></p>
             {% else %}
-                <p><a href="/?regionid={{region.id}}">{{region.title}}</a></p>
+                <p><a href="/?regionid={{region.id}}">{{region.ru_title}}</a></p>
             {% endif %}
         {% endif %}
     {% endfor %}</div>

@@ -9,8 +9,9 @@
 	<link rel="stylesheet" href="{{ MEDIA_URL }}css/redtable.css" type="text/css">
 	{% block head %} 
         {% endblock %}
-    <title>{% if SITE_NAME %}{{ SITE_NAME }}: {% endif %}{% block head_title %}{% endblock %}</title>      
-    
+    <title>{{meta.title}}</title>      
+    <meta name="keywords" content="{{meta.keywords}}">
+    <meta name="description" content="{{meta.description}}">    
     {% block extra_head_base %}
         {% block extra_head %}{% endblock %}
         {% block google_maps %}{% endblock %}
@@ -25,19 +26,27 @@
     </head>
     <body class="{% block body_class %}{% endblock %}" bgcolor="#EEEEEE" onload="{% block body_initialize %} {% endblock%}" >  
     <input type="text" style="display:none" id="region"/>
+   <!-- <div id="header" style="margin-bottom:-50px;">-->
     <div id="header">
-            <div id="transl"><a href="/razborka/region">{{region_label}}<em>{{region_name}}</em></a></div>
+            <div id="transl"><a href="/razborka/region">Ваш {{region_label}}<em>{{region_name}}</em></a></div>
             <a href="/">Все<em>-разборки</em></a>
+            {% block tree_urls %}
+            <div style="float:left;width:30%;height:20px;">
+             {% for i in tree_urls %}
+                 <a href="{{i.0}}" class="tree_urls">{{i.1}} / </a>
+             {% endfor %}
+            </div>
+            {% endblock %}
             <ul class="buttons top_bound">
                 {% block main_button %}<li class=""><a href="/">Главная</a></li> {%endblock%}
                 {% block blogs_button %}<li class=""><a href="/razborka/blogs">Статьи</a></li>{%endblock%}
                 {% block dismantle_add_button %}<li class=""><a href="/dismantle-add">Добавить разборку</a></li>{%endblock%}
                 {% block about_button %}<li class=""><a href="/razborka/about">О проекте</a></li>{%endblock%}
-<!--                 {% block feedback_button %}<li class=""><a href="/razborka/feedback">Администрация сайта</a></li>{%endblock%} -->
             </ul>
-    </div>
+    </div>  
     
-	<div class="body">   
+	<div class="body">  
+            
             {% block body_outer %}
                 {% block google_maps_div %}{% endblock %}
                 {% block yandex_maps_div %}{% endblock %}
@@ -52,7 +61,6 @@
                 {% endif %}
             {% endblock %}
         </div>
-
         {% block extra_body_base %}
             {% block extra_body %}{% endblock %}
         {% endblock %}           

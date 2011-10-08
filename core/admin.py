@@ -83,7 +83,15 @@ class DismantleAdmin( ContragentAdmin ):
             
     inlines= [InlineDismantleModel, InlineContragentPicture, ]
 
+class ManufactureAdmin( admin.ModelAdmin ):
+    list_display = ( 'title', 'ru_title', 'get_thumbnail' )
+    
+class ModelAdmin( admin.ModelAdmin ):
+    list_display = ( 'manufacture', 'title', 'ru_title' )
+    
 admin.site.register(Contragent, ContragentAdmin)
 admin.site.register(Car, CarAdmin)
 admin.site.register(Picture, PictureAdmin )
 admin.site.register(Dismantle, DismantleAdmin)
+admin.site.register(Manufacture, ManufactureAdmin)
+admin.site.register(Model, ModelAdmin )
