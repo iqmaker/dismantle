@@ -6,6 +6,13 @@
     <script type="text/javascript">
     function initialize_yandex() {
         var ymap = new YMaps.Map(document.getElementById("YandexMapID"));
+        ymap.addControl(new YMaps.TypeControl());
+        ymap.addControl(new YMaps.ToolBar());
+        ymap.addControl(new YMaps.Zoom());
+        ymap.addControl(new YMaps.MiniMap());
+        ymap.addControl(new YMaps.ScaleLine());
+//         ymap.addControl(new YMaps.SearchControl());
+            
         ymap.setCenter(new YMaps.GeoPoint({{city_center.longitude}}, {{city_center.latitude}}), {{city_center.zoom}} );
         {% for i in contragents %}
                     var placemark = new YMaps.Placemark( new YMaps.GeoPoint( {{i.longitude}}, {{i.latitude}} ), { style: "default#storehouseIcon", hideIcon: false } );

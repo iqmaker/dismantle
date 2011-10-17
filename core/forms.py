@@ -41,6 +41,15 @@ class DismantleSearchForm( Form ):
     manufacture = CustomModelChoiceField( queryset=Manufacture.objects.all(), label=u'Марка автомобиля',  required=False, empty_label=u"не выбрано",  )
     model = CustomModelChoiceField( queryset=Model.objects.filter( id=0 ), check_queryset=Model.objects.all(), label=u'Модель', required=False, empty_label=u"любая модель")
     
+    year = forms.ChoiceField( choices=enums.FOUNDATION_YEAR, label=u'Год автомобиля', required=False )
+    car_service= forms.BooleanField( label=u'Свой автосервис', required=False )
+    purchase_vehicles= forms.BooleanField( label=u'Скупка автомобилей на разборку', required=False )
+    new_parts= forms.BooleanField( label=u'Наличие новых запчастей', required=False )
+    contract_motor= forms.BooleanField( label=u'Специализация на контрактных двигателях', required=False )
+    send_regions= forms.BooleanField( label=u'Отправка в регионы', required=False )
+    local_delivery= forms.BooleanField( label=u'Местная доставка покупателю', required=False )
+    
+    
     #manufacture.widget.attrs["onchange"] = "setMake();"
 
 class DismantleAddForm( ModelForm ):

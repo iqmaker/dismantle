@@ -64,13 +64,13 @@ p.main_letter:first-letter {
     font-size:24px;
     margin-left:0px;
     font-weight:bold;
-    color:#630101;
+    color:#5E616D;
 }
 
 p.siple_letter:first-letter { 
     margin-left:0px;
     font-weight:bold;
-    color:#697A57;
+    color:#606D6B;
     font-size:1.1em;
 }
 
